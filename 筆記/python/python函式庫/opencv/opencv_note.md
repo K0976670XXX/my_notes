@@ -1,4 +1,4 @@
-#OPENCV_電腦視覺庫 {ignore=true}
+#OPENCV_電腦視覺庫. {ignore=true}
 [toc]
 
 ## OPENCV簡介:
@@ -284,28 +284,28 @@ cv2.destroyAllWindows()
 
 **INTER_NEAREST最近鄰插值**:令原始圖像對應位置的色塊等比例放大或縮小後放到目標圖像縮放後的對應位置
 &emsp;&emsp;算法:
-&emsp;&emsp;&emsp;&emsp;$原始 X=目標 X\times (原始和目標圖像的縮放比例)$
-&emsp;&emsp;&emsp;&emsp;$srcX=dstX\times (srcWidth/dstWidth)$
-&emsp;&emsp;&emsp;&emsp;$srcY=dstY\times (srcHeight/dstHeight)$
+&emsp;&emsp;&emsp;&emsp;$原始 X=目標 X \times (原始和目標圖像的縮放比例)$
+&emsp;&emsp;&emsp;&emsp;$srcX=dstX \times (srcWidth/dstWidth)$
+&emsp;&emsp;&emsp;&emsp;$srcY=dstY \times (srcHeight/dstHeight)$
 &emsp;&emsp;&emsp;&emsp;$outputimg(dstX,dstY)=img(srcX,srcY)$
 &emsp;&emsp;參考資料:<https://www.uj5u.com/qita/305312.html>
 
-**INTER_LINEAR雙線性插值(預設)**:由原圖像位置在它附近的$2\times2$區域4個鄰近像素的值通過加權平均計算得出的
+**INTER_LINEAR雙線性插值(預設)**:由原圖像位置在它附近的$2 \times 2$區域4個鄰近像素的值通過加權平均計算得出的
 &emsp;&emsp;雙線性內插值算法放大後的圖像質量較高，不會出現像素值不連續的情況。然而此算法**具有低通濾波器的性質，使高頻分量受損，所以可能會使圖像輪廓在一定程度上變得模糊**。
 &emsp;**算法:**
 &emsp;&emsp;&emsp;先找出目標影像在原始圖像縮放後的對應位置，**0.5 是為了校正因為原點在(0,0)**
-&emsp;&emsp;&emsp;$src_x = (dst_x+0.5)\times (src_w/dst_w) - 0.5$
-&emsp;&emsp;&emsp;$src_y = (dst_y+0.5)\times (src_w/dst_w) - 0.5$
+&emsp;&emsp;&emsp;$src_x = (dst_x+0.5) \times (src_w/dst_w) - 0.5$
+&emsp;&emsp;&emsp;$src_y = (dst_y+0.5) \times (src_w/dst_w) - 0.5$
 &emsp;&emsp;計算插值
 &emsp;&emsp;&emsp;使之轉換成$img(i+u , j+v)$
 &emsp;&emsp;&emsp;&emsp;$i, j = int(src_x),int(src_y)$
 &emsp;&emsp;&emsp;&emsp;$u, v = src_x - i, src_y - j$
 &emsp;&emsp;加權平均計算 4 個鄰近像素的值#上方用(1-u)下方用(u)，左方用(1-v)右方用(v)，
 &emsp;&emsp;&emsp;$f(src_x,src_y) =$
-&emsp;&emsp;&emsp;&emsp;$(1-u)\times (1-v)\times img[i,j]$&emsp;&emsp;**(左上)**
-&emsp;&emsp;&emsp;&emsp;$+(1-u)\times v\times src[i,j+1]$&emsp;&emsp;**(右上)**
-&emsp;&emsp;&emsp;&emsp;$+u\times (1-v)\times src[i+1,j] $&emsp;&emsp;**(左下)**
-&emsp;&emsp;&emsp;&emsp;$+u\times v\times src[i+1,j+1]$&emsp;&emsp;**(右下)**
+&emsp;&emsp;&emsp;&emsp;$(1-u) \times (1-v) \times img[i,j]$&emsp;&emsp;**(左上)**
+&emsp;&emsp;&emsp;&emsp;$+(1-u) \times v \times src[i,j+1]$&emsp;&emsp;**(右上)**
+&emsp;&emsp;&emsp;&emsp;$+u \times (1-v) \times src[i+1,j] $&emsp;&emsp;**(左下)**
+&emsp;&emsp;&emsp;&emsp;$+u \times v \times src[i+1,j+1]$&emsp;&emsp;**(右下)**
 &emsp;&emsp;在對 f 做正規化(使他在 0~255)
 &emsp;&emsp;插值:output(dst_x, dst_y) = f(src_x,src_y)
 &emsp;&emsp;參考資料:<https://zh.wikipedia.org/zh-tw/双线性插值>
