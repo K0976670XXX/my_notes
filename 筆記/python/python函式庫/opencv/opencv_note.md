@@ -284,9 +284,9 @@ cv2.destroyAllWindows()
 
 **INTER_NEAREST最近鄰插值**:令原始圖像對應位置的色塊等比例放大或縮小後放到目標圖像縮放後的對應位置
 &emsp;&emsp;算法:
-&emsp;&emsp;&emsp;&emsp;$原始 X=目標 X\times(原始和目標圖像的縮放比例)$
-&emsp;&emsp;&emsp;&emsp;$srcX=dstX\times(srcWidth/dstWidth)$
-&emsp;&emsp;&emsp;&emsp;$srcY=dstY\times(srcHeight/dstHeight)$
+&emsp;&emsp;&emsp;&emsp;$原始 X=目標 X\times (原始和目標圖像的縮放比例)$
+&emsp;&emsp;&emsp;&emsp;$srcX=dstX\times (srcWidth/dstWidth)$
+&emsp;&emsp;&emsp;&emsp;$srcY=dstY\times (srcHeight/dstHeight)$
 &emsp;&emsp;&emsp;&emsp;$outputimg(dstX,dstY)=img(srcX,srcY)$
 &emsp;&emsp;參考資料:<https://www.uj5u.com/qita/305312.html>
 
@@ -294,29 +294,29 @@ cv2.destroyAllWindows()
 &emsp;&emsp;雙線性內插值算法放大後的圖像質量較高，不會出現像素值不連續的情況。然而此算法**具有低通濾波器的性質，使高頻分量受損，所以可能會使圖像輪廓在一定程度上變得模糊**。
 &emsp;**算法:**
 &emsp;&emsp;&emsp;先找出目標影像在原始圖像縮放後的對應位置，**0.5 是為了校正因為原點在(0,0)**
-&emsp;&emsp;&emsp;$src_x = (dst_x+0.5)\times(src_w/dst_w) - 0.5$
-&emsp;&emsp;&emsp;$src_y = (dst_y+0.5)\times(src_w/dst_w) - 0.5$
+&emsp;&emsp;&emsp;$src_x = (dst_x+0.5)\times (src_w/dst_w) - 0.5$
+&emsp;&emsp;&emsp;$src_y = (dst_y+0.5)\times (src_w/dst_w) - 0.5$
 &emsp;&emsp;計算插值
 &emsp;&emsp;&emsp;使之轉換成$img(i+u , j+v)$
 &emsp;&emsp;&emsp;&emsp;$i, j = int(src_x),int(src_y)$
 &emsp;&emsp;&emsp;&emsp;$u, v = src_x - i, src_y - j$
 &emsp;&emsp;加權平均計算 4 個鄰近像素的值#上方用(1-u)下方用(u)，左方用(1-v)右方用(v)，
 &emsp;&emsp;&emsp;$f(src_x,src_y) =$
-&emsp;&emsp;&emsp;&emsp;$(1-u)\times(1-v)\times img[i,j]$&emsp;&emsp;**(左上)**
+&emsp;&emsp;&emsp;&emsp;$(1-u)\times (1-v)\times img[i,j]$&emsp;&emsp;**(左上)**
 &emsp;&emsp;&emsp;&emsp;$+(1-u)\times v\times src[i,j+1]$&emsp;&emsp;**(右上)**
-&emsp;&emsp;&emsp;&emsp;$+u\times(1-v)\times src[i+1,j] $&emsp;&emsp;**(左下)**
+&emsp;&emsp;&emsp;&emsp;$+u\times (1-v)\times src[i+1,j] $&emsp;&emsp;**(左下)**
 &emsp;&emsp;&emsp;&emsp;$+u\times v\times src[i+1,j+1]$&emsp;&emsp;**(右下)**
 &emsp;&emsp;在對 f 做正規化(使他在 0~255)
 &emsp;&emsp;插值:output(dst_x, dst_y) = f(src_x,src_y)
-&emsp;&emsp;參考資料:https://zh.wikipedia.org/zh-tw/双线性插值
+&emsp;&emsp;參考資料:<https://zh.wikipedia.org/zh-tw/双线性插值>
 
 **INTER_AREA 使用像素區域關係進行重采樣**:對圖像相近色塊重複好幾次不同的濾波
-&emsp;&emsp;參考資料:https://zh.wikipedia.org/zh-hant/采样定理
+&emsp;&emsp;參考資料:<https://zh.wikipedia.org/zh-hant/采样定理>
 
 **INTER_CUBIC 4x4 像素鄰域的雙三次插值**:和雙線性插值類似但花費時間更久，品質更好，取附近 16 個像素做加權平均
 &emsp;&emsp;p.s:BiCubic 基函式求出 16 個像素點的權重，加權不像雙線性插值哪樣單純
-&emsp;&emsp;參考資料:https://www.uj5u.com/qita/305312.html
-&emsp;&emsp;參考資料:https://walkonnet.com/archives/466178
+&emsp;&emsp;參考資料:<https://www.uj5u.com/qita/305312.html>
+&emsp;&emsp;參考資料:<https://walkonnet.com/archives/466178>
 
 **INTER_LANCZOS4(取附近 64 個像素做加權平均)**:省略
 
