@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="mobile-web-app-capable" content="yes">
     <title>
-        pytube_youtube影片下載用:
+        flask函式庫(簡易網頁服務):
     </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
@@ -31,125 +31,245 @@
 </head>
 
 <body>
-    <div id="doc" class="markdown-body container-fluid comment-inner comment-enabled" data-hard-breaks="true"><h6 id="tags-python_函式庫" data-id="tags-python_函式庫"><a class="anchor hidden-xs" href="#tags-python_函式庫" title="tags-python_函式庫"><span class="octicon octicon-link"></span></a><span>tags: </span><code>python_函式庫</code></h6><h1 id="pytube_youtube影片下載用" data-id="pytube_youtube影片下載用"><a class="anchor hidden-xs" href="#pytube_youtube影片下載用" title="pytube_youtube影片下載用"><span class="octicon octicon-link"></span></a>pytube_youtube影片下載用:</h1><blockquote>
-<p><small><i class="fa fa-user"></i> 羅世勇 <i class="fa fa-clock-o"></i> Thu, Jul 7, 2022 4:58 PM</small></p>
-</blockquote><h2 id="pytube簡介" data-id="pytube簡介"><a class="anchor hidden-xs" href="#pytube簡介" title="pytube簡介"><span class="octicon octicon-link"></span></a><span>pytube簡介:</span></h2><p><span>  pytube是專門用來讀取</span><strong><span>youtube</span></strong><span>影片資訊的函式庫，他將複雜的功能整合在了一起，方便使用者使用。</span><br>
-<span>  pytube的開放原始碼庫: </span><a href="https://github.com/pytube/pytube" target="_blank" rel="noopener"><span>https://github.com/pytube/pytube</span></a><br>
-<span>  可參考資料:</span><a href="https://pytube.io/en/latest/" target="_blank" rel="noopener"><span>https://pytube.io/en/latest/</span></a></p><p><span>  函示庫安裝:</span><strong><span>pip install pytube</span></strong></p><hr><h2 id="基本用法" data-id="基本用法"><a class="anchor hidden-xs" href="#基本用法" title="基本用法"><span class="octicon octicon-link"></span></a><span>基本用法:</span></h2><h3 id="從yt影片網址取得影片數據" data-id="從yt影片網址取得影片數據"><a class="anchor hidden-xs" href="#從yt影片網址取得影片數據" title="從yt影片網址取得影片數據"><span class="octicon octicon-link"></span></a><span>從yt影片網址取得影片數據:</span></h3><p><span>  使用方法:</span><a href="https://pytube.io/en/latest/api.html?highlight=download#youtube-object" target="_blank" rel="noopener"><span>可參考資料網址</span></a></p><pre><code class="python hljs">    <span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube    <span class="hljs-comment">#也可以只用import pytube，這樣單純乾淨一點</span>
-    yt = YouTube(<span class="hljs-string">"https://youtu.be/0VwWD4uf0qg"</span>)    <span class="hljs-comment">#載入youtube影片ID</span>
-    <span class="hljs-built_in">print</span>(yt)                      <span class="hljs-comment">#顯示影片ID</span>
-    <span class="hljs-built_in">print</span>(yt.title)                <span class="hljs-comment">#顯示標題</span>
-    <span class="hljs-built_in">print</span>(<span class="hljs-built_in">str</span>(yt.length)+<span class="hljs-string">'sec'</span>)    <span class="hljs-comment">#顯示影片長度(sec)</span>
-    <span class="hljs-built_in">print</span>(yt.thumbnail_url)        <span class="hljs-comment">#顯示縮圖網址</span>
-    <span class="hljs-built_in">print</span>(yt.publish_date)         <span class="hljs-comment">#顯示影片發布"日期"</span>
-    <span class="hljs-built_in">print</span>(yt.author)               <span class="hljs-comment">#顯示頻道名</span>
-    <span class="hljs-built_in">print</span>(<span class="hljs-string">"\n影片說明:\n"</span>+yt.description)<span class="hljs-comment">#影片說明</span>
-    <span class="hljs-comment">#....有一堆暫時省略，可參考上面網址</span>
-</code></pre><p><span>  輸出結果:</span><br>
-<img src="https://i.imgur.com/R4cOzPt.png" alt="" loading="lazy"></p><h3 id="擷取影音流" data-id="擷取影音流"><a class="anchor hidden-xs" href="#擷取影音流" title="擷取影音流"><span class="octicon octicon-link"></span></a><span>擷取影音流:</span></h3><p><span>  使用前先簡單說明一下yt影片的架構，yt的影片流有很多種格式，其中有的影片流包含影片及聲音、有的只有聲音或影片而已，例如2K影像yt為了提高觀看體驗通常會將影片及聲音拆開用短封包的方式穩定傳輸影音，又例如360p的影片，使用者網路差不太可能特別要求要高音質的，yt就會給他配較低音質的聲音，繚解後可利用以下方法去取得yt可被截取的影音流格式。</span></p><pre><code class="python hljs"><span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube
-<span class="hljs-built_in">print</span>(yt.streams.<span class="hljs-built_in">all</span>())                    <span class="hljs-comment">#顯示所有可用影音流</span>
-<span class="hljs-comment">#因為資料太亂了這裡只顯示所有可用影音流</span>
-<span class="hljs-comment">#print(yt.streams.filter(res='720p'))       #顯示所有720p的資源</span>
-<span class="hljs-comment">#print(yt.streams.filter(subtype='mp4'))    #顯示所有格式為mp4的</span>
-<span class="hljs-comment">#print(yt.streams.filter(only_audio=True))  #顯示所有音訊流</span>
-</code></pre><p><span>  輸出結果(已整理過):</span><br>
-<img src="https://i.imgur.com/XoqPqTu.png" alt="" loading="lazy"></p><h3 id="下載影片" data-id="下載影片"><a class="anchor hidden-xs" href="#下載影片" title="下載影片"><span class="octicon octicon-link"></span></a><span>下載影片:</span></h3><p><span>  在清楚上面架構後，已知vcodec為影片的編解碼模式及acodec為聲音的編解碼模式，可以發現後5個為聲音檔，前三個為同時具有影音的檔案。</span><br>
-<span>  使用:</span><br>
-<strong><span>p.s:自訂的檔名不能有 / or \ 他會判定成路經</span></strong><span>，若用預設檔名，預設為影片標題影片可以有斜線。</span><br>
-<strong><span>p.s:get_by_resolution()方法為下載影音用，後面的畫質必須要影音皆可編解碼的</span></strong></p><pre><code class="python hljs"><span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube
-<span class="hljs-comment">#下載360p影音</span>
-yt.streams.get_by_resolution(<span class="hljs-string">'360p'</span>).download(<span class="hljs-string">'video/'</span>,filename=<span class="hljs-string">'影片名360p.mp4'</span>)
-<span class="hljs-built_in">print</span>(<span class="hljs-string">'360p的影片已下載好\n'</span>)
-<span class="hljs-comment">#下載720p影音</span>
-yt.streams.get_by_resolution(<span class="hljs-string">'720p'</span>).download(<span class="hljs-string">'video/'</span>,filename=<span class="hljs-string">'影片名720p.mp4'</span>)
-<span class="hljs-built_in">print</span>(<span class="hljs-string">'720p的影片已下載好\n'</span>)
-<span class="hljs-comment">#自動下載(最高畫質影音)</span>
-yt.streams.get_highest_resolution().download(<span class="hljs-string">'video/'</span>)
-<span class="hljs-built_in">print</span>(<span class="hljs-string">'已將最高畫質下載好了\n'</span>)
-</code></pre><h3 id="下載音樂" data-id="下載音樂"><a class="anchor hidden-xs" href="#下載音樂" title="下載音樂"><span class="octicon octicon-link"></span></a><span>下載音樂:</span></h3><p><span>  使用:</span></p><pre><code class="python hljs"><span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube
-<span class="hljs-keyword">import</span> os
-<span class="hljs-comment">#下載音樂(因為預設副檔名為mp4，所以檔名加上.mp3)</span>
-yt.streams.get_audio_only().download(<span class="hljs-string">'music/'</span>,filename=yt.title+<span class="hljs-string">'.mp3'</span>)
-<span class="hljs-built_in">print</span>(<span class="hljs-string">'已將音樂下載好了\n'</span>)
+    <div id="doc" class="markdown-body container-fluid comment-inner comment-enabled" data-hard-breaks="true"><h6 id="tags-python_函式庫" data-id="tags-python_函式庫"><a class="anchor hidden-xs" href="#tags-python_函式庫" title="tags-python_函式庫"><span class="octicon octicon-link"></span></a><span>tags: </span><code>python_函式庫</code></h6><h1 id="flask函式庫" data-id="flask函式庫"><a class="anchor hidden-xs" href="#flask函式庫" title="flask函式庫"><span class="octicon octicon-link"></span></a><span>flask函式庫:</span></h1><blockquote>
+<p><small><i class="fa fa-user"></i> Luoshiyong <i class="fa fa-clock-o"></i> Fri, Jul 8, 2022 3:51 PM</small></p>
+</blockquote><h2 id="flask簡介" data-id="flask簡介"><a class="anchor hidden-xs" href="#flask簡介" title="flask簡介"><span class="octicon octicon-link"></span></a><span>flask簡介:</span></h2><p><span>  </span><strong><span>Flask</span></strong><span>是一個使用編寫的輕量級。基於Werkzeug </span><a href="https://zh.wikipedia.org/wiki/WSGI" title="WSGI" target="_blank" rel="noopener"><span>WSGI(Web伺服器閘道器介面)</span></a><span>工具箱 和 </span><a href="https://zh.wikipedia.org/wiki/Jinja2" title="Jinja2" target="_blank" rel="noopener"><span>Jinja2</span></a><a href="https://zh.wikipedia.org/wiki/%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E" title="模板引擎" target="_blank" rel="noopener"><span>模板引擎</span></a><span>。Flask使用BSD授權。</span></p><p><span>Flask被稱為「微框架」，因為它使用簡單的核心，用擴充增加其他功能。Flask沒有預設使用的資料庫、表單驗證工具。然而，Flask保留了擴增的彈性，可以用Flask-extension</span><a href="https://zh.wikipedia.org/zh-tw/Flask#cite_note-2" target="_blank" rel="noopener"><span>[2]</span></a><span>加入這些功能：</span><a href="https://zh.wikipedia.org/wiki/%E5%B0%8D%E8%B1%A1%E9%97%9C%E4%BF%82%E6%98%A0%E5%B0%84" title="物件關係對映" target="_blank" rel="noopener"><span>ORM</span></a><span>、表單驗證工具、檔案上傳、各種開放式身分驗證技術。</span></p><p><span>因此只需要簡單的幾行代碼就能簡單的做到網路服務的功能。</span></p><p><span>flask開放原始碼庫:</span><a href="https://github.com/pallets/flask" target="_blank" rel="noopener"><span>https://github.com/pallets/flask</span></a><br>
+<span>函式庫的安裝:</span><strong><span>pip install Flask</span></strong></p><h2 id="函式的使用" data-id="函式的使用"><a class="anchor hidden-xs" href="#函式的使用" title="函式的使用"><span class="octicon octicon-link"></span></a><span>函式的使用:</span></h2><h3 id="flask基本用法" data-id="flask基本用法"><a class="anchor hidden-xs" href="#flask基本用法" title="flask基本用法"><span class="octicon octicon-link"></span></a><span>flask基本用法:</span></h3><p><span>  以下程式碼為一個flask程式</span><strong><span>最少所需要的內容</span></strong></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask   <span class="hljs-comment"># 載入 Flask</span>
 
-<span class="hljs-comment">#特殊情況檔名有斜線、空白時，影片的標題無法做儲存所以改成下列方法:</span>
-music_file=yt.streams.get_audio_only().download(<span class="hljs-string">'music/'</span>)
-<span class="hljs-comment">#更改檔案副檔名從mp4 to mp3</span>
-base, ext = os.path.splitext(music_file)
-new_file = base + <span class="hljs-string">'.mp3'</span>
-os.rename(music_file, new_file)
-<span class="hljs-built_in">print</span>(<span class="hljs-string">'已將音樂下載好了\n'</span>)
+<span class="hljs-comment">#初始化宣告:__name__表示當前執行執行的程式</span>
+<span class="hljs-comment">#該段表示，將客戶端的所有請求都交由這個程式去執行</span>
+app = Flask(__name__)
 
-<span class="hljs-comment">#或縮減一點:</span>
-music_file=yt.streams.get_audio_only().download(<span class="hljs-string">'music/'</span>)
-os.rename(music_file,(yt.title+<span class="hljs-string">'mp3'</span>))
-<span class="hljs-built_in">print</span>(<span class="hljs-string">'已將音樂下載好了\n'</span>)
-</code></pre><h3 id="處理播放清單" data-id="處理播放清單"><a class="anchor hidden-xs" href="#處理播放清單" title="處理播放清單"><span class="octicon octicon-link"></span></a><span>處理播放清單:</span></h3><p><span>  使用:Playlist函式會自動將播放清單內所有影片網址組成tuple(元組、數組)，只要再用Youtube函式就能做上面那些操作了。</span></p><pre><code class="python hljs"><span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube
-<span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> Playlist
-yt_playlist=Playlist(<span class="hljs-string">"https://youtube.com/playlist?list=PLJvnvm6opLtg_I_D4sBQSTDaSMn_8Jugm"</span>)
-<span class="hljs-built_in">print</span>(yt_playlist.video_urls) <span class="hljs-comment">#顯示該播放清單所有影片網址</span>
-<span class="hljs-comment">#利用for loop將tuple內網址逐個讀取</span>
-<span class="hljs-keyword">for</span> yt_url <span class="hljs-keyword">in</span> yt_playlist.video_urls:
-    yt=YouTube(yt_url,on_progress_callback=on_progress)
-    yt.streams.get_highest_resolution().download(<span class="hljs-string">'video/'</span>)
-    <span class="hljs-built_in">print</span>(yt.title+<span class="hljs-string">'已下載完成\n'</span>)
-</code></pre><h2 id="補充資料" data-id="補充資料"><a class="anchor hidden-xs" href="#補充資料" title="補充資料"><span class="octicon octicon-link"></span></a><span>補充資料:</span></h2><h3 id="顯示下載進度" data-id="顯示下載進度"><a class="anchor hidden-xs" href="#顯示下載進度" title="顯示下載進度"><span class="octicon octicon-link"></span></a><span>顯示下載進度:</span></h3><pre><code class="python hljs"><span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube
-<span class="hljs-keyword">from</span> pytube.cli <span class="hljs-keyword">import</span> on_progress<span class="hljs-comment">#必要函式庫</span>
-<span class="hljs-comment">#只要在加上on_progress_callback=on_progress就可以了</span>
-yt = YouTube(<span class="hljs-string">"https://youtu.be/0VwWD4uf0qg"</span>,on_progress_callback=on_progress)
-yt.streams.get_highest_resolution().download(<span class="hljs-string">'video/'</span>)
+<span class="hljs-comment">#定義路由(網路資料傳遞的路徑):依據客戶端發出的請求，判斷要將資料送往哪個路由，並用@app.route去建立路由，故可以定義多個路由</span>
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">"/r1"</span></span>)           </span><span class="hljs-comment">#建立路由，可針對主網域 / 發出請求</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">f1</span>():                   <span class="hljs-comment">#發出請求後會執行 f1() 的函式</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"hello world"</span>    <span class="hljs-comment">#執行函式後會回傳特定的內容</span>
 
-</code></pre><p><img src="https://i.imgur.com/RVEr5NA.png" alt="" loading="lazy"><br>
-<img src="https://i.imgur.com/lSbnHhY.png" alt="" loading="lazy"></p><hr><h2 id="應用" data-id="應用"><a class="anchor hidden-xs" href="#應用" title="應用"><span class="octicon octicon-link"></span></a><span>應用:</span></h2><h3 id="成品1" data-id="成品1"><a class="anchor hidden-xs" href="#成品1" title="成品1"><span class="octicon octicon-link"></span></a><span>成品1:</span></h3><pre><code class="python hljs"><span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube
-<span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> Playlist
-<span class="hljs-keyword">from</span> pytube.cli <span class="hljs-keyword">import</span> on_progress
-<span class="hljs-keyword">import</span> os 
-<span class="hljs-comment">#影片下載</span>
-<span class="hljs-keyword">def</span> <span class="hljs-title function_">download_video</span>(<span class="hljs-params">yt_url</span>):
-    <span class="hljs-keyword">for</span> video_url <span class="hljs-keyword">in</span> yt_url:
-        yt=YouTube(video_url,on_progress_callback=on_progress)
-        yt.streams.get_highest_resolution().download(<span class="hljs-string">'video/'</span>)
-        <span class="hljs-built_in">print</span>(yt.title+<span class="hljs-string">'已下載\n'</span>)
-<span class="hljs-comment">#音樂下載</span>
-<span class="hljs-keyword">def</span> <span class="hljs-title function_">download_music</span>(<span class="hljs-params">yt_url</span>):
-    <span class="hljs-keyword">for</span> music_url <span class="hljs-keyword">in</span> yt_url:
-        yt=YouTube(music_url,on_progress_callback=on_progress)
-        music_file=yt.streams.get_audio_only().download(<span class="hljs-string">'music/'</span>)
-        base, ext = os.path.splitext(music_file)
-        new_file = base + <span class="hljs-string">'.mp3'</span>
-        os.rename(music_file, new_file)
-        <span class="hljs-built_in">print</span>(yt.title+<span class="hljs-string">'已下載\n'</span>)
-<span class="hljs-comment">#主函式:</span>
-<span class="hljs-keyword">while</span>(<span class="hljs-literal">True</span>):
-    <span class="hljs-built_in">print</span>(<span class="hljs-string">"youtube影片/音樂下載:\n"</span>)
-    url=<span class="hljs-built_in">input</span>(<span class="hljs-string">'請貼上網址:\n'</span>)
-    <span class="hljs-comment">#簡易判斷是否為yt網址</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-string">'https://youtu'</span> <span class="hljs-keyword">in</span> url <span class="hljs-keyword">or</span> <span class="hljs-string">'https://www.youtu'</span> <span class="hljs-keyword">in</span> url:
-        <span class="hljs-comment">#判斷是否為播放清單</span>
-        <span class="hljs-keyword">if</span> <span class="hljs-string">'playlist'</span> <span class="hljs-keyword">in</span> url:
-            <span class="hljs-built_in">print</span>(<span class="hljs-string">'確認為播放清單:'</span>)
-            download_model=<span class="hljs-built_in">input</span>(<span class="hljs-string">'輸入1下載音樂，輸入任意為下載影片:'</span>)
-            <span class="hljs-keyword">if</span> download_model==<span class="hljs-string">'1'</span>:
-                <span class="hljs-built_in">print</span>(<span class="hljs-string">'確認下載音樂'</span>)
-                download_music(Playlist(url))
-            <span class="hljs-keyword">else</span>:
-                <span class="hljs-built_in">print</span>(<span class="hljs-string">'確認下載影片'</span>)
-                download_video(Playlist(url))
-        <span class="hljs-comment">#為單一影片</span>
-        <span class="hljs-keyword">else</span>:
-            <span class="hljs-built_in">print</span>(<span class="hljs-string">'確認為單一網址'</span>)
-            download_model=<span class="hljs-built_in">input</span>(<span class="hljs-string">'輸入1下載音樂，輸入任意為下載影片:'</span>)
-            <span class="hljs-keyword">if</span> download_model==<span class="hljs-string">'1'</span>:
-                <span class="hljs-built_in">print</span>(<span class="hljs-string">'確認下載音樂'</span>)
-                <span class="hljs-comment">#因為播放清單資料以tuple保存，為避免再寫一個子程式處理，浪費空間將他也以tuple保存</span>
-                download_music({url})
-            <span class="hljs-keyword">else</span>:
-                <span class="hljs-built_in">print</span>(<span class="hljs-string">'確認下載影片'</span>)
-                download_video({url})
-    <span class="hljs-keyword">else</span>:
-        <span class="hljs-built_in">print</span>(<span class="hljs-string">"網址錯誤"</span>)
-    <span class="hljs-built_in">input</span>(<span class="hljs-string">"---下載完成----"</span>)
-</code></pre><hr><hr><hr><hr></div>
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">"/r2"</span></span>)           </span><span class="hljs-comment">#建立第2個路由</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">f2</span>():                   <span class="hljs-comment">#函式名字不能相同</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"goodbye world"</span>  <span class="hljs-comment">#回傳</span>
+
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">"/&lt;string:msg&gt;"</span></span>)        </span><span class="hljs-comment">#建立第3個路由路由為使用者寫得</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">f3</span>(<span class="hljs-params">msg</span>):                   <span class="hljs-comment">#函式名字不能相同</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'該路經'</span>+msg+<span class="hljs-string">'錯誤'</span>  <span class="hljs-comment">#回傳</span>
+app.run()                   <span class="hljs-comment"># 執行</span>
+</div></div></code></pre><p><span>  </span><strong><span>執行結果:</span></strong><br>
+<img src="https://i.imgur.com/q5nSnCt.png" alt="" loading="lazy"></p><p><strong><span>看到之後不要關閉</span></strong><span>，將http://127.0.0.1:5000複製到瀏覽器上，會變成這樣是正常的</span></p><p><img src="https://i.imgur.com/GW1S6m9.png" alt="" loading="lazy"></p><p><strong><span>再來在網址後面加上程式中定義的路由</span></strong><a href="http://127.0.0.1:5000/r1" target="_blank" rel="noopener"><span>http://127.0.0.1:5000/r1</span></a><br>
+<img src="https://i.imgur.com/pv9yYHw.png" alt="" loading="lazy"><br>
+<strong><span>另一個路由</span></strong><a href="http://127.0.0.1:5000/r2" target="_blank" rel="noopener"><span>http://127.0.0.1:5000/r2</span></a><br>
+<img src="https://i.imgur.com/SXGriaM.png" alt="" loading="lazy"><br>
+<span>**自訂義的路徑:</span><br>
+<img src="https://i.imgur.com/nfmqmcL.png" alt="" loading="lazy"></p><h4 id="-補充資料" data-id="-補充資料"><a class="anchor hidden-xs" href="#-補充資料" title="-補充資料"><span class="octicon octicon-link"></span></a><span>  </span><strong><span>補充資料:</span></strong></h4><p><span>  上面的最後一條說到可以自訂義變數，flask提供了5種基本的變數轉換，稍微改一下就好，p.s:string為預設的可以選擇不要打。</span></p><table>
+<thead>
+<tr>
+<th><span>類型</span></th>
+<th><span>說明</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span>string</span></td>
+<td><span>預設值，表示不包含斜線的文字。</span></td>
+</tr>
+<tr>
+<td><span>int</span></td>
+<td><span>正整數。</span></td>
+</tr>
+<tr>
+<td><span>float</span></td>
+<td><span>正浮點數。</span></td>
+</tr>
+<tr>
+<td><span>path</span></td>
+<td><span>路徑，類似 string，但可以包含斜線。</span></td>
+</tr>
+<tr>
+<td><span>uuid</span></td>
+<td><span>UUID 字串。</span></td>
+</tr>
+</tbody>
+</table><h3 id="GET和POST" data-id="GET和POST"><a class="anchor hidden-xs" href="#GET和POST" title="GET和POST"><span class="octicon octicon-link"></span></a><span>GET和POST:</span></h3><p><span>  GET和POST的差別在於:</span><br>
+<span>    使用</span><strong><span>GET</span></strong><span>傳遞訊息時資料以</span><strong><span>網址</span></strong><span>做傳送，所以資料可以在網址上顯示，其中route在沒有做設定時預設為GET模式，如上面程式的效果</span><br>
+<span>    使用</span><strong><span>POST</span></strong><span>傳遞訊息時資料以</span><strong><span>message-body</span></strong><span>做傳送，所以資料不會在網頁上呈現。</span><br>
+<span>  使用:</span></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask
+app = Flask(__name__)
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">"/r1"</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">f1</span>():                   
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"hello world"</span>
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">"/r2"</span>,methods=[<span class="hljs-string">'POST'</span>]</span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">f2</span>():
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"goodbye world"</span>
+app.run()
+</div></div></code></pre><p><span>直接貼上網址:顯示錯誤</span><br>
+<img src="https://i.imgur.com/aSMK6Ln.png" alt="" loading="lazy"><br>
+<span>使用requests函式庫的POST方法:</span><strong><span>上面的程式要開著</span></strong></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">import</span> requests<span class="hljs-comment">#使用requests函式庫</span>
+web = requests.post(<span class="hljs-string">'http://127.0.0.1:5000/r2'</span>)  <span class="hljs-comment"># 使用 post 方法</span>
+<span class="hljs-built_in">print</span>(web.text)    <span class="hljs-comment"># 讀取並印出 text 屬性</span>
+</div></div></code></pre><p><span>輸出:成功取得資料</span><br>
+<img src="https://i.imgur.com/176yew5.png" alt="" loading="lazy"></p><h3 id="定義port和host" data-id="定義port和host"><a class="anchor hidden-xs" href="#定義port和host" title="定義port和host"><span class="octicon octicon-link"></span></a><span>定義port和host:</span></h3><p><span>  使用:因為前面的方法僅能用於當前電腦中使用，還不能對外使用該程式，故加上host並將其定義為0.0.0.0便能供</span><strong><span>區域網路</span></strong><span>內的所有設備使用，還不能連入外網，除非你有</span><a href="https://ipapply.twnic.tw/" target="_blank" rel="noopener"><span>申請專屬的IP位置</span></a><span>。</span></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask
+app = Flask(__name__)
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">"/"</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">home</span>():
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"hello world"</span>
+<span class="hljs-comment">#host設為0.0.0.0表示以本機的IP位址為地址，post為溝資料溝通的專屬通道</span>
+app.run(host=<span class="hljs-string">"0.0.0.0"</span>, port=<span class="hljs-number">5555</span>)
+</div></div></code></pre><p><span>  </span><strong><span>輸出:</span></strong><br>
+<img src="https://i.imgur.com/bKJxVBy.png" alt="" loading="lazy"><br>
+<span>  </span><strong><span>此為手機連入區域網路的畫面:</span></strong><br>
+<img src="https://i.imgur.com/7BC98v3.png" alt="" loading="lazy"></p><h3 id="讀取參數" data-id="讀取參數"><a class="anchor hidden-xs" href="#讀取參數" title="讀取參數"><span class="octicon octicon-link"></span></a><span>讀取參數:</span></h3><p><span>  當route使用GET時，request.args 會將網址的參數讀取為 tuple 格式，tuple 第一個項目為參數，第二個項目為值，如下</span></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, request   <span class="hljs-comment"># 載入了 request</span>
+app = Flask(__name__)
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">"/"</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">home</span>():
+    <span class="hljs-built_in">print</span>(request.args)            <span class="hljs-comment"># 使用 request.args</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"&lt;h1&gt;&lt;center&gt;hello world&lt;/h1&gt;"</span>
+    <span class="hljs-comment">#&lt;h1&gt;&lt;/h1&gt;為html語法的標題，&lt;center&gt;為置中對齊</span>
+app.run()
+</div></div></code></pre><p><span>  在網址路由後面加上?age=20&amp;name=luoshiyong，程式就會接收到對應tuple形式的資料。</span><br>
+<img src="https://i.imgur.com/hYTOi86.png" alt="" loading="lazy"></p><p><span>如上同理，若使用者以POST發送訊息也可以:</span><br>
+<span>接收端:</span></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, request
+app = Flask(__name__)
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">"/"</span>,methods=[<span class="hljs-string">'POST'</span>]</span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">home</span>():
+    <span class="hljs-built_in">print</span>(request.form)            <span class="hljs-comment"># 使用 request.form</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">"hello world"</span>
+app.run()
+</div></div></code></pre><p><span>發送端:</span></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">import</span> requests
+data = {<span class="hljs-string">'age'</span>: <span class="hljs-string">'20'</span>,<span class="hljs-string">'name'</span>: <span class="hljs-string">'luoshiyong'</span>}
+web = requests.post(<span class="hljs-string">'http://127.0.0.1:5000/'</span>, data=data)   <span class="hljs-comment"># 發送 POST 請求</span>
+<span class="hljs-built_in">print</span>(web.text)
+</div></div></code></pre><h3 id="使用網頁模板html檔" data-id="使用網頁模板html檔"><a class="anchor hidden-xs" href="#使用網頁模板html檔" title="使用網頁模板html檔"><span class="octicon octicon-link"></span></a><span>使用網頁模板(html檔)</span></h3><p><span>  利用render_template方法便可做到依據網頁模板，快速更改網頁資料，讓網頁的html不是寫死的。</span><a href="https://jinja.palletsprojects.com/en/3.0.x/templates/" target="_blank" rel="noopener"><span>可用樣板語法</span></a><br>
+<span>html:一般html不能這樣寫，</span><strong><span>由於flask的預設檔案路徑為Templates</span></strong><span>故此檔須放在Templates的資料夾中。</span></p><pre><code class="html hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="language-xml"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+        </span><span class="hljs-template-tag">{% <span class="hljs-name"><span class="hljs-name">if</span></span> name %}</span><span class="language-xml">
+            <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello </span><span class="hljs-template-variable">{{ name }}</span><span class="language-xml">!<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+        </span><span class="hljs-template-tag">{% <span class="hljs-name"><span class="hljs-name">else</span></span> %}</span><span class="language-xml">
+            <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello, World!<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+        </span><span class="hljs-template-tag">{% <span class="hljs-name"><span class="hljs-name">endif</span></span> %}</span><span class="language-xml">
+    <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</span></div></div></code></pre><p><span>python檔寫法:</span></p><pre><code class="python hljs"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask,request,render_template
+app=Flask(__name__)
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">'/r'</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">f0</span>():
+    name = request.args.get(<span class="hljs-string">'name'</span>)
+    <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">'01.html'</span>,name=name)
+app.run()
+</code></pre><p><span>輸出:</span><br>
+<img src="https://i.imgur.com/8WNuFyY.png" alt="" loading="lazy"></p><p><span>python檔改造寫法:因為Flask檔案預設路徑為Templates，稍微有點麻煩，故為了改變該路徑程式可以改寫成這樣:</span></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask,request,render_template
+<span class="hljs-comment">#將flask的預設檔案路徑設為根目錄(當前檔案目錄)</span>
+app=Flask(__name__,template_folder=<span class="hljs-string">'./'</span>)
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">'/r'</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">f0</span>():
+    name = request.args.get(<span class="hljs-string">'name'</span>)
+    <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">'01.html'</span>,name=name)
+app.run()
+</div></div></code></pre><h2 id="flask連入外網方法ngrok" data-id="flask連入外網方法ngrok"><a class="anchor hidden-xs" href="#flask連入外網方法ngrok" title="flask連入外網方法ngrok"><span class="octicon octicon-link"></span></a><span>flask連入外網方法ngrok:</span></h2><p><span>  通常情況下不會有專屬IP位址，這種情況下想要對外網公開，做到將電腦做為伺服器可以利用ngrok(</span><a href="https://ngrok.com/" target="_blank" rel="noopener"><span>https://ngrok.com/</span></a><span>)，可以利用他將電腦連入外網。</span><br>
+<span>用法:</span><br>
+<span>  1.登入後先依據電腦下載檔案</span><br>
+<img src="https://i.imgur.com/BqI4UBE.png" alt="" loading="lazy"><br>
+<span>  2.將檔案解壓縮，會看到一個ngrok.exe，點他並執行，執行後回到網頁找token。</span><br>
+<img src="https://i.imgur.com/3klv37X.png" alt="" loading="lazy"><br>
+<span>  3.直接複製他貼到CMD然後按enter，畫面會變成這樣</span><br>
+<img src="https://i.imgur.com/0WXp2OS.png" alt="" loading="lazy"><br>
+<span>  4.輸入</span><strong><span>ngrok http 80</span></strong><span>，80是port，因為port80通常用於傳輸網頁的，詳細情況看這</span><a href="https://zh.wikipedia.org/wiki/TCP/UDP%E7%AB%AF%E5%8F%A3%E5%88%97%E8%A1%A8" target="_blank" rel="noopener"><strong><span>TCP/UDP端口列表</span></strong></a><span>，若想要自訂port需先確認該port是否已被占用，cmd指令:</span><strong><span>netstat -ano|find "80"</span><strong><span>或直接用</span></strong><span>netstat -na</span></strong><span>顯示全部正在使用的。</span><br>
+<span>輸入後會出現這個畫面:</span><br>
+<img src="https://i.imgur.com/z0Di6ww.png" alt="" loading="lazy"><br>
+<span>  5.這樣伺服器就啟用了，哪個Forwarding後面的網址即為外網連入的網址，該網址每次重開皆不同，若要固定的網址需要付費。</span></p><h3 id="使用ngrok架設簡易網頁服務" data-id="使用ngrok架設簡易網頁服務"><a class="anchor hidden-xs" href="#使用ngrok架設簡易網頁服務" title="使用ngrok架設簡易網頁服務"><span class="octicon octicon-link"></span></a><span>使用ngrok架設簡易網頁服務:</span></h3><p><span>python程式瑪:直接沿用前面的檔案</span></p><pre><code class="python hljs"><div class="wrapper"><div class="gutter linenumber"><span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span></div><div class="code"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask,request,render_template
+app=Flask(__name__,template_folder=<span class="hljs-string">'./'</span>)
+<span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">'/r'</span></span>)</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">f0</span>():
+    name = request.args.get(<span class="hljs-string">'name'</span>)
+    <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">'01.html'</span>,name=name)
+<span class="hljs-comment">#由於前面ngrok設定的port為80，故這裡需要將flask程式的port設成80</span>
+<span class="hljs-comment">#若前面設定為5000，則可以不用設定port</span>
+<span class="hljs-comment">#debug=True，用於偵錯，當設為True時可以不用一直重開.py檔，保持cmd介面直接去更改.py檔的內容</span>
+app.run(host=<span class="hljs-string">'0.0.0.0'</span>, port=<span class="hljs-number">80</span>,debug=<span class="hljs-literal">True</span>)
+</div></div></code></pre><p><span>此為手機用行動網路時的畫面，表示已成功連上外網</span><br>
+<img src="https://i.imgur.com/WvvY3TO.jpg" alt="" loading="lazy"><br>
+<span>可以利用</span><strong><span>127.0.0.1:4040</span></strong><span>去檢查當前伺服器狀態。</span><br>
+<img src="https://i.imgur.com/SU3TWt8.png" alt="" loading="lazy"></p><h2 id="應用—待補" data-id="應用—待補"><a class="anchor hidden-xs" href="#應用—待補" title="應用—待補"><span class="octicon octicon-link"></span></a><span>應用:—待補</span></h2></div>
     <div class="ui-toc dropup unselectable hidden-print" style="display:none;">
         <div class="pull-right dropdown">
             <a id="tocLabel" class="ui-toc-label btn btn-default" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" title="Table of content">
@@ -157,24 +277,21 @@ yt.streams.get_highest_resolution().download(<span class="hljs-string">'video/'<
             </a>
             <ul id="ui-toc" class="ui-toc-dropdown dropdown-menu" aria-labelledby="tocLabel">
                 <div class="toc"><ul class="nav">
-<li><a href="#pytube_youtube影片下載用" title="pytube_youtube影片下載用:">pytube_youtube影片下載用:</a><ul class="nav">
-<li><a href="#pytube簡介" title="pytube簡介:">pytube簡介:</a></li>
-<li><a href="#基本用法" title="基本用法:">基本用法:</a><ul class="nav">
-<li><a href="#從yt影片網址取得影片數據" title="從yt影片網址取得影片數據:">從yt影片網址取得影片數據:</a></li>
-<li><a href="#擷取影音流" title="擷取影音流:">擷取影音流:</a></li>
-<li><a href="#下載影片" title="下載影片:">下載影片:</a></li>
-<li><a href="#下載音樂" title="下載音樂:">下載音樂:</a></li>
-<li><a href="#處理播放清單" title="處理播放清單:">處理播放清單:</a></li>
+<li><a href="#flask函式庫" title="flask函式庫:">flask函式庫:</a><ul class="nav">
+<li><a href="#flask簡介" title="flask簡介:">flask簡介:</a></li>
+<li><a href="#函式的使用" title="函式的使用:">函式的使用:</a><ul class="nav">
+<li><a href="#flask基本用法" title="flask基本用法:">flask基本用法:</a></li>
+<li><a href="#GET和POST" title="GET和POST:">GET和POST:</a></li>
+<li><a href="#定義port和host" title="定義port和host:">定義port和host:</a></li>
+<li><a href="#讀取參數" title="讀取參數:">讀取參數:</a></li>
+<li><a href="#使用網頁模板html檔" title="使用網頁模板(html檔)">使用網頁模板(html檔)</a></li>
 </ul>
 </li>
-<li><a href="#補充資料" title="補充資料:">補充資料:</a><ul class="nav">
-<li><a href="#顯示下載進度" title="顯示下載進度:">顯示下載進度:</a></li>
+<li><a href="#flask連入外網方法ngrok" title="flask連入外網方法ngrok:">flask連入外網方法ngrok:</a><ul class="nav">
+<li><a href="#使用ngrok架設簡易網頁服務" title="使用ngrok架設簡易網頁服務:">使用ngrok架設簡易網頁服務:</a></li>
 </ul>
 </li>
-<li><a href="#應用" title="應用:">應用:</a><ul class="nav">
-<li><a href="#成品1" title="成品1:">成品1:</a></li>
-</ul>
-</li>
+<li><a href="#應用—待補" title="應用:—待補">應用:—待補</a></li>
 </ul>
 </li>
 </ul>
@@ -184,24 +301,21 @@ yt.streams.get_highest_resolution().download(<span class="hljs-string">'video/'<
     </div>
     <div id="ui-toc-affix" class="ui-affix-toc ui-toc-dropdown unselectable hidden-print" data-spy="affix" style="top:17px;display:none;" null null>
         <div class="toc"><ul class="nav">
-<li><a href="#pytube_youtube影片下載用" title="pytube_youtube影片下載用:">pytube_youtube影片下載用:</a><ul class="nav">
-<li><a href="#pytube簡介" title="pytube簡介:">pytube簡介:</a></li>
-<li><a href="#基本用法" title="基本用法:">基本用法:</a><ul class="nav">
-<li><a href="#從yt影片網址取得影片數據" title="從yt影片網址取得影片數據:">從yt影片網址取得影片數據:</a></li>
-<li><a href="#擷取影音流" title="擷取影音流:">擷取影音流:</a></li>
-<li><a href="#下載影片" title="下載影片:">下載影片:</a></li>
-<li><a href="#下載音樂" title="下載音樂:">下載音樂:</a></li>
-<li><a href="#處理播放清單" title="處理播放清單:">處理播放清單:</a></li>
+<li><a href="#flask函式庫" title="flask函式庫:">flask函式庫:</a><ul class="nav">
+<li><a href="#flask簡介" title="flask簡介:">flask簡介:</a></li>
+<li><a href="#函式的使用" title="函式的使用:">函式的使用:</a><ul class="nav">
+<li><a href="#flask基本用法" title="flask基本用法:">flask基本用法:</a></li>
+<li><a href="#GET和POST" title="GET和POST:">GET和POST:</a></li>
+<li><a href="#定義port和host" title="定義port和host:">定義port和host:</a></li>
+<li><a href="#讀取參數" title="讀取參數:">讀取參數:</a></li>
+<li><a href="#使用網頁模板html檔" title="使用網頁模板(html檔)">使用網頁模板(html檔)</a></li>
 </ul>
 </li>
-<li><a href="#補充資料" title="補充資料:">補充資料:</a><ul class="nav">
-<li><a href="#顯示下載進度" title="顯示下載進度:">顯示下載進度:</a></li>
+<li><a href="#flask連入外網方法ngrok" title="flask連入外網方法ngrok:">flask連入外網方法ngrok:</a><ul class="nav">
+<li><a href="#使用ngrok架設簡易網頁服務" title="使用ngrok架設簡易網頁服務:">使用ngrok架設簡易網頁服務:</a></li>
 </ul>
 </li>
-<li><a href="#應用" title="應用:">應用:</a><ul class="nav">
-<li><a href="#成品1" title="成品1:">成品1:</a></li>
-</ul>
-</li>
+<li><a href="#應用—待補" title="應用:—待補">應用:—待補</a></li>
 </ul>
 </li>
 </ul>

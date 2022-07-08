@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="mobile-web-app-capable" content="yes">
     <title>
-        pytube_youtube影片下載用:
+        qrcode函式庫:
     </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
@@ -30,126 +30,248 @@
     <![endif]-->
 </head>
 
+
 <body>
-    <div id="doc" class="markdown-body container-fluid comment-inner comment-enabled" data-hard-breaks="true"><h6 id="tags-python_函式庫" data-id="tags-python_函式庫"><a class="anchor hidden-xs" href="#tags-python_函式庫" title="tags-python_函式庫"><span class="octicon octicon-link"></span></a><span>tags: </span><code>python_函式庫</code></h6><h1 id="pytube_youtube影片下載用" data-id="pytube_youtube影片下載用"><a class="anchor hidden-xs" href="#pytube_youtube影片下載用" title="pytube_youtube影片下載用"><span class="octicon octicon-link"></span></a>pytube_youtube影片下載用:</h1><blockquote>
-<p><small><i class="fa fa-user"></i> 羅世勇 <i class="fa fa-clock-o"></i> Thu, Jul 7, 2022 4:58 PM</small></p>
-</blockquote><h2 id="pytube簡介" data-id="pytube簡介"><a class="anchor hidden-xs" href="#pytube簡介" title="pytube簡介"><span class="octicon octicon-link"></span></a><span>pytube簡介:</span></h2><p><span>  pytube是專門用來讀取</span><strong><span>youtube</span></strong><span>影片資訊的函式庫，他將複雜的功能整合在了一起，方便使用者使用。</span><br>
-<span>  pytube的開放原始碼庫: </span><a href="https://github.com/pytube/pytube" target="_blank" rel="noopener"><span>https://github.com/pytube/pytube</span></a><br>
-<span>  可參考資料:</span><a href="https://pytube.io/en/latest/" target="_blank" rel="noopener"><span>https://pytube.io/en/latest/</span></a></p><p><span>  函示庫安裝:</span><strong><span>pip install pytube</span></strong></p><hr><h2 id="基本用法" data-id="基本用法"><a class="anchor hidden-xs" href="#基本用法" title="基本用法"><span class="octicon octicon-link"></span></a><span>基本用法:</span></h2><h3 id="從yt影片網址取得影片數據" data-id="從yt影片網址取得影片數據"><a class="anchor hidden-xs" href="#從yt影片網址取得影片數據" title="從yt影片網址取得影片數據"><span class="octicon octicon-link"></span></a><span>從yt影片網址取得影片數據:</span></h3><p><span>  使用方法:</span><a href="https://pytube.io/en/latest/api.html?highlight=download#youtube-object" target="_blank" rel="noopener"><span>可參考資料網址</span></a></p><pre><code class="python hljs">    <span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube    <span class="hljs-comment">#也可以只用import pytube，這樣單純乾淨一點</span>
-    yt = YouTube(<span class="hljs-string">"https://youtu.be/0VwWD4uf0qg"</span>)    <span class="hljs-comment">#載入youtube影片ID</span>
-    <span class="hljs-built_in">print</span>(yt)                      <span class="hljs-comment">#顯示影片ID</span>
-    <span class="hljs-built_in">print</span>(yt.title)                <span class="hljs-comment">#顯示標題</span>
-    <span class="hljs-built_in">print</span>(<span class="hljs-built_in">str</span>(yt.length)+<span class="hljs-string">'sec'</span>)    <span class="hljs-comment">#顯示影片長度(sec)</span>
-    <span class="hljs-built_in">print</span>(yt.thumbnail_url)        <span class="hljs-comment">#顯示縮圖網址</span>
-    <span class="hljs-built_in">print</span>(yt.publish_date)         <span class="hljs-comment">#顯示影片發布"日期"</span>
-    <span class="hljs-built_in">print</span>(yt.author)               <span class="hljs-comment">#顯示頻道名</span>
-    <span class="hljs-built_in">print</span>(<span class="hljs-string">"\n影片說明:\n"</span>+yt.description)<span class="hljs-comment">#影片說明</span>
-    <span class="hljs-comment">#....有一堆暫時省略，可參考上面網址</span>
-</code></pre><p><span>  輸出結果:</span><br>
-<img src="https://i.imgur.com/R4cOzPt.png" alt="" loading="lazy"></p><h3 id="擷取影音流" data-id="擷取影音流"><a class="anchor hidden-xs" href="#擷取影音流" title="擷取影音流"><span class="octicon octicon-link"></span></a><span>擷取影音流:</span></h3><p><span>  使用前先簡單說明一下yt影片的架構，yt的影片流有很多種格式，其中有的影片流包含影片及聲音、有的只有聲音或影片而已，例如2K影像yt為了提高觀看體驗通常會將影片及聲音拆開用短封包的方式穩定傳輸影音，又例如360p的影片，使用者網路差不太可能特別要求要高音質的，yt就會給他配較低音質的聲音，繚解後可利用以下方法去取得yt可被截取的影音流格式。</span></p><pre><code class="python hljs"><span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube
-<span class="hljs-built_in">print</span>(yt.streams.<span class="hljs-built_in">all</span>())                    <span class="hljs-comment">#顯示所有可用影音流</span>
-<span class="hljs-comment">#因為資料太亂了這裡只顯示所有可用影音流</span>
-<span class="hljs-comment">#print(yt.streams.filter(res='720p'))       #顯示所有720p的資源</span>
-<span class="hljs-comment">#print(yt.streams.filter(subtype='mp4'))    #顯示所有格式為mp4的</span>
-<span class="hljs-comment">#print(yt.streams.filter(only_audio=True))  #顯示所有音訊流</span>
-</code></pre><p><span>  輸出結果(已整理過):</span><br>
-<img src="https://i.imgur.com/XoqPqTu.png" alt="" loading="lazy"></p><h3 id="下載影片" data-id="下載影片"><a class="anchor hidden-xs" href="#下載影片" title="下載影片"><span class="octicon octicon-link"></span></a><span>下載影片:</span></h3><p><span>  在清楚上面架構後，已知vcodec為影片的編解碼模式及acodec為聲音的編解碼模式，可以發現後5個為聲音檔，前三個為同時具有影音的檔案。</span><br>
-<span>  使用:</span><br>
-<strong><span>p.s:自訂的檔名不能有 / or \ 他會判定成路經</span></strong><span>，若用預設檔名，預設為影片標題影片可以有斜線。</span><br>
-<strong><span>p.s:get_by_resolution()方法為下載影音用，後面的畫質必須要影音皆可編解碼的</span></strong></p><pre><code class="python hljs"><span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube
-<span class="hljs-comment">#下載360p影音</span>
-yt.streams.get_by_resolution(<span class="hljs-string">'360p'</span>).download(<span class="hljs-string">'video/'</span>,filename=<span class="hljs-string">'影片名360p.mp4'</span>)
-<span class="hljs-built_in">print</span>(<span class="hljs-string">'360p的影片已下載好\n'</span>)
-<span class="hljs-comment">#下載720p影音</span>
-yt.streams.get_by_resolution(<span class="hljs-string">'720p'</span>).download(<span class="hljs-string">'video/'</span>,filename=<span class="hljs-string">'影片名720p.mp4'</span>)
-<span class="hljs-built_in">print</span>(<span class="hljs-string">'720p的影片已下載好\n'</span>)
-<span class="hljs-comment">#自動下載(最高畫質影音)</span>
-yt.streams.get_highest_resolution().download(<span class="hljs-string">'video/'</span>)
-<span class="hljs-built_in">print</span>(<span class="hljs-string">'已將最高畫質下載好了\n'</span>)
-</code></pre><h3 id="下載音樂" data-id="下載音樂"><a class="anchor hidden-xs" href="#下載音樂" title="下載音樂"><span class="octicon octicon-link"></span></a><span>下載音樂:</span></h3><p><span>  使用:</span></p><pre><code class="python hljs"><span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube
-<span class="hljs-keyword">import</span> os
-<span class="hljs-comment">#下載音樂(因為預設副檔名為mp4，所以檔名加上.mp3)</span>
-yt.streams.get_audio_only().download(<span class="hljs-string">'music/'</span>,filename=yt.title+<span class="hljs-string">'.mp3'</span>)
-<span class="hljs-built_in">print</span>(<span class="hljs-string">'已將音樂下載好了\n'</span>)
+    <div id="doc" class="markdown-body container-fluid comment-inner comment-enabled" data-hard-breaks="true"><h6 id="tags-python_函式庫" data-id="tags-python_函式庫"><a class="anchor hidden-xs" href="#tags-python_函式庫" title="tags-python_函式庫"><span class="octicon octicon-link"></span></a><span>tags: </span><code>python_函式庫</code></h6><h1 id="qrcode函式庫" data-id="qrcode函式庫"><a class="anchor hidden-xs" href="#qrcode函式庫" title="qrcode函式庫"><span class="octicon octicon-link"></span></a><span>qrcode函式庫:</span></h1><blockquote>
+<p><small><i class="fa fa-user"></i> 羅 世 勇 <i class="fa fa-clock-o"></i> Thu, Jul 7, 2022 8:09 PM</small></p>
+</blockquote><h2 id="qcode函式庫介紹" data-id="qcode函式庫介紹"><a class="anchor hidden-xs" href="#qcode函式庫介紹" title="qcode函式庫介紹"><span class="octicon octicon-link"></span></a><span>qcode函式庫介紹:</span></h2><p><span>  用於快速生成qrcode的函式庫，相比MyQR更簡單</span><br>
+<span>  因為qrcode函式庫需要額外加裝Pillow函式庫才能輸出qrcode，(pillow為一基礎處理影像函式庫)</span><br>
+<span>  qrcode開放原始碼:</span><a href="https://github.com/lincolnloop/python-qrcode" target="_blank" rel="noopener"><span>https://github.com/lincolnloop/python-qrcode</span></a><br>
+<span>  函式庫安裝:</span><strong><span>pip install qrcode</span></strong><br>
+<span>       </span><strong><span>pip install pillow</span></strong></p><p><a href="https://k0976670xxx.github.io/my_notes/" target="_blank" rel="noopener"><span>https://k0976670xxx.github.io/my_notes/</span></a></p><h3 id="qrcode函式庫基礎用法篇" data-id="qrcode函式庫基礎用法篇"><a class="anchor hidden-xs" href="#qrcode函式庫基礎用法篇" title="qrcode函式庫基礎用法篇"><span class="octicon octicon-link"></span></a><span>qrcode函式庫基礎用法篇:</span></h3><p><span>  用法:夠簡單</span></p><pre><code class="python hljs"><span class="hljs-keyword">import</span> qrcode
+img = qrcode.make(<span class="hljs-string">'https://k0976670xxx.github.io/my_notes/'</span>)
+img.show()                <span class="hljs-comment"># 顯示圖片</span>
+img.save(<span class="hljs-string">'qrcode.jpg'</span>)    <span class="hljs-comment"># 儲存圖片</span>
+</code></pre><p><span>  輸出結果:</span><img src="https://i.imgur.com/zLQtiIJ.png" alt="" width="100" height="100" loading="lazy"></p><h3 id="qrcode函式庫進階設定" data-id="qrcode函式庫進階設定"><a class="anchor hidden-xs" href="#qrcode函式庫進階設定" title="qrcode函式庫進階設定"><span class="octicon octicon-link"></span></a><span>qrcode函式庫進階設定:</span></h3><table>
+<thead>
+<tr>
+<th><span>參數</span></th>
+<th><span>說明</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span>box_size</span></td>
+<td><span>一個方塊的邊長為幾個像素，預設 10。</span></td>
+</tr>
+<tr>
+<td><span>border</span></td>
+<td><span>邊界(白框)，預設 4 ( 最小為 4 )。</span></td>
+</tr>
+<tr>
+<td><span>error_correction</span></td>
+<td><span>容錯率，數值為 ERROR_CORRECT_L ( 7% )、</span><br><span>ERROR_CORRECT_M ( 15%，預設值 )、</span><br><span>ERROR_CORRECT_Q ( 25% )、</span><br><span>ERROR_CORRECT_H ( 30% )。</span></td>
+</tr>
+<tr>
+<td><span>version</span></td>
+<td><span>尺寸大小 ( 重複排列次數 )，數值為 1～39，預設 1。</span></td>
+</tr>
+</tbody>
+</table><h4 id="使用1" data-id="使用1"><a class="anchor hidden-xs" href="#使用1" title="使用1"><span class="octicon octicon-link"></span></a><span>使用1:</span></h4><pre><code class="python hljs"><span class="hljs-keyword">import</span> qrcode
+qr = qrcode.QRCode(
+    version=<span class="hljs-number">39</span>,<span class="hljs-comment">#尺寸大小 ( 重複排列次數 )，數值為 1～39。</span>
+    error_correction=qrcode.constants.ERROR_CORRECT_L,<span class="hljs-comment">#容錯率</span>
+    box_size=<span class="hljs-number">10</span>,<span class="hljs-comment">#一個方塊的邊長為幾個像素</span>
+    border=<span class="hljs-number">4</span><span class="hljs-comment">#白框</span>
+)
+qr.add_data(<span class="hljs-string">'https://k0976670xxx.github.io/my_notes/'</span>)   <span class="hljs-comment"># 要轉換成 QRCode 的文字</span>
+qr.make(fit=<span class="hljs-literal">True</span>)          <span class="hljs-comment"># 根據參數製作為 QRCode 物件</span>
+img = qr.make_image()      <span class="hljs-comment"># 產生 QRCode 圖片</span>
+img.show()                 <span class="hljs-comment"># 顯示圖片 </span>
+img.save(<span class="hljs-string">'qrcode.png'</span>)     <span class="hljs-comment"># 儲存圖片</span>
+</code></pre><p><span>  輸出結果:嗯…他可以掃描這也是QRcode</span><br>
+<img src="https://i.imgur.com/GGGmEz0.png" alt="" loading="lazy"></p><h4 id="使用2設定顏色" data-id="使用2設定顏色"><a class="anchor hidden-xs" href="#使用2設定顏色" title="使用2設定顏色"><span class="octicon octicon-link"></span></a><span>使用2:設定顏色</span></h4><pre><code class="python hljs"><span class="hljs-keyword">import</span> qrcode
+qr = qrcode.QRCode(
+    version=<span class="hljs-number">10</span>,<span class="hljs-comment">#尺寸大小 ( 重複排列次數 )，數值為 1～39。</span>
+    error_correction=qrcode.constants.ERROR_CORRECT_L,<span class="hljs-comment">#容錯率</span>
+    box_size=<span class="hljs-number">10</span>,<span class="hljs-comment">#一個方塊的邊長為幾個像素</span>
+    border=<span class="hljs-number">4</span><span class="hljs-comment">#白框</span>
+)
+qr.add_data(<span class="hljs-string">'https://k0976670xxx.github.io/my_notes/'</span>)   <span class="hljs-comment"># 要轉換成 QRCode 的文字</span>
+qr.make(fit=<span class="hljs-literal">True</span>)          <span class="hljs-comment"># 根據參數製作為 QRCode 物件</span>
+img =qr.make_image(fill_color=<span class="hljs-string">"red"</span>, back_color=<span class="hljs-string">"black"</span>)<span class="hljs-comment"># 產生 QRCode 圖片</span>
+img.show()                 <span class="hljs-comment"># 顯示圖片</span>
+img.save(<span class="hljs-string">'qrcode.png'</span>)     <span class="hljs-comment"># 儲存圖片</span>
+</code></pre><p><span>  輸出結果:</span><img src="https://i.imgur.com/I4slsLo.png" alt="" width="100" height="100" loading="lazy"></p><h4 id="使用3輸出svg向量圖格式" data-id="使用3輸出svg向量圖格式"><a class="anchor hidden-xs" href="#使用3輸出svg向量圖格式" title="使用3輸出svg向量圖格式"><span class="octicon octicon-link"></span></a><span>使用3:輸出svg(向量圖格式):</span></h4><pre><code class="python hljs"><span class="hljs-keyword">import</span> qrcode
+<span class="hljs-keyword">import</span> qrcode.image.svg
+<span class="hljs-comment"># 要轉換成QRCode的文字，原本的再加上image_factory=qrcode.image.svg.SvgPathImage</span>
+<span class="hljs-comment">#可同樣用上面的進階操作，但不可設定顏色</span>
+img = qrcode.make(<span class="hljs-string">'https://k0976670xxx.github.io/my_notes/'</span>, image_factory=qrcode.image.svg.SvgPathImage)    
+<span class="hljs-comment">#img.show()                # SVG 無法使用</span>
+img.save(<span class="hljs-string">'qrcode.svg'</span>)     <span class="hljs-comment"># 儲存圖片，副檔名為 SVG</span>
+</code></pre><h4 id="使用4利用qrcode函式庫內建造型" data-id="使用4利用qrcode函式庫內建造型"><a class="anchor hidden-xs" href="#使用4利用qrcode函式庫內建造型" title="使用4利用qrcode函式庫內建造型"><span class="octicon octicon-link"></span></a><span>使用4:利用qrcode函式庫內建造型:</span></h4><p><span>  p.s:無法用於svg中</span></p><table>
+<thead>
+<tr>
+<th><span>造型名稱</span></th>
+<th><span>說明</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span>SquareModuleDrawer()</span></td>
+<td><span>預設方格</span></td>
+</tr>
+<tr>
+<td><span>GappedSquareModuleDrawer()</span></td>
+<td><span>小方格</span></td>
+</tr>
+<tr>
+<td><span>CircleModuleDrawer()</span></td>
+<td><span>圓點</span></td>
+</tr>
+<tr>
+<td><span>RoundedModuleDrawer()</span></td>
+<td><span>圓角方格</span></td>
+</tr>
+<tr>
+<td><span>VerticalBarsDrawer()</span></td>
+<td><span>直線</span></td>
+</tr>
+<tr>
+<td><span>HorizontalBarsDrawer()</span></td>
+<td><span>橫線</span></td>
+</tr>
+</tbody>
+</table><pre><code class="python hljs"><span class="hljs-keyword">import</span> qrcode
+<span class="hljs-keyword">from</span> qrcode.image.styledpil <span class="hljs-keyword">import</span> StyledPilImage
+<span class="hljs-keyword">from</span> qrcode.image.styles.moduledrawers <span class="hljs-keyword">import</span> SquareModuleDrawer        <span class="hljs-comment">#原始，方格</span>
+<span class="hljs-keyword">from</span> qrcode.image.styles.moduledrawers <span class="hljs-keyword">import</span> GappedSquareModuleDrawer  <span class="hljs-comment">#小方塊</span>
+<span class="hljs-keyword">from</span> qrcode.image.styles.moduledrawers <span class="hljs-keyword">import</span> CircleModuleDrawer        <span class="hljs-comment">#圓點</span>
+<span class="hljs-keyword">from</span> qrcode.image.styles.moduledrawers <span class="hljs-keyword">import</span> RoundedModuleDrawer       <span class="hljs-comment">#圓角方格</span>
+<span class="hljs-keyword">from</span> qrcode.image.styles.moduledrawers <span class="hljs-keyword">import</span> VerticalBarsDrawer        <span class="hljs-comment">#直線</span>
+<span class="hljs-keyword">from</span> qrcode.image.styles.moduledrawers <span class="hljs-keyword">import</span> HorizontalBarsDrawer      <span class="hljs-comment">#橫線</span>
 
-<span class="hljs-comment">#特殊情況檔名有斜線、空白時，影片的標題無法做儲存所以改成下列方法:</span>
-music_file=yt.streams.get_audio_only().download(<span class="hljs-string">'music/'</span>)
-<span class="hljs-comment">#更改檔案副檔名從mp4 to mp3</span>
-base, ext = os.path.splitext(music_file)
-new_file = base + <span class="hljs-string">'.mp3'</span>
-os.rename(music_file, new_file)
-<span class="hljs-built_in">print</span>(<span class="hljs-string">'已將音樂下載好了\n'</span>)
+qr = qrcode.QRCode(
+    version=<span class="hljs-number">1</span>,
+    error_correction=qrcode.constants.ERROR_CORRECT_L,
+    box_size=<span class="hljs-number">10</span>,
+    border=<span class="hljs-number">4</span>
+)
+qr.add_data(<span class="hljs-string">'https://k0976670xxx.github.io/my_notes/'</span>)
+qr.make(fit=<span class="hljs-literal">True</span>)
 
-<span class="hljs-comment">#或縮減一點:</span>
-music_file=yt.streams.get_audio_only().download(<span class="hljs-string">'music/'</span>)
-os.rename(music_file,(yt.title+<span class="hljs-string">'mp3'</span>))
-<span class="hljs-built_in">print</span>(<span class="hljs-string">'已將音樂下載好了\n'</span>)
-</code></pre><h3 id="處理播放清單" data-id="處理播放清單"><a class="anchor hidden-xs" href="#處理播放清單" title="處理播放清單"><span class="octicon octicon-link"></span></a><span>處理播放清單:</span></h3><p><span>  使用:Playlist函式會自動將播放清單內所有影片網址組成tuple(元組、數組)，只要再用Youtube函式就能做上面那些操作了。</span></p><pre><code class="python hljs"><span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube
-<span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> Playlist
-yt_playlist=Playlist(<span class="hljs-string">"https://youtube.com/playlist?list=PLJvnvm6opLtg_I_D4sBQSTDaSMn_8Jugm"</span>)
-<span class="hljs-built_in">print</span>(yt_playlist.video_urls) <span class="hljs-comment">#顯示該播放清單所有影片網址</span>
-<span class="hljs-comment">#利用for loop將tuple內網址逐個讀取</span>
-<span class="hljs-keyword">for</span> yt_url <span class="hljs-keyword">in</span> yt_playlist.video_urls:
-    yt=YouTube(yt_url,on_progress_callback=on_progress)
-    yt.streams.get_highest_resolution().download(<span class="hljs-string">'video/'</span>)
-    <span class="hljs-built_in">print</span>(yt.title+<span class="hljs-string">'已下載完成\n'</span>)
-</code></pre><h2 id="補充資料" data-id="補充資料"><a class="anchor hidden-xs" href="#補充資料" title="補充資料"><span class="octicon octicon-link"></span></a><span>補充資料:</span></h2><h3 id="顯示下載進度" data-id="顯示下載進度"><a class="anchor hidden-xs" href="#顯示下載進度" title="顯示下載進度"><span class="octicon octicon-link"></span></a><span>顯示下載進度:</span></h3><pre><code class="python hljs"><span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube
-<span class="hljs-keyword">from</span> pytube.cli <span class="hljs-keyword">import</span> on_progress<span class="hljs-comment">#必要函式庫</span>
-<span class="hljs-comment">#只要在加上on_progress_callback=on_progress就可以了</span>
-yt = YouTube(<span class="hljs-string">"https://youtu.be/0VwWD4uf0qg"</span>,on_progress_callback=on_progress)
-yt.streams.get_highest_resolution().download(<span class="hljs-string">'video/'</span>)
+img1 = qr.make_image(image_factory=StyledPilImage, module_drawer=SquareModuleDrawer())
+img2 = qr.make_image(image_factory=StyledPilImage, module_drawer=GappedSquareModuleDrawer())
+img3 = qr.make_image(image_factory=StyledPilImage, module_drawer=CircleModuleDrawer())
+img4 = qr.make_image(image_factory=StyledPilImage, module_drawer=RoundedModuleDrawer())
+img5 = qr.make_image(image_factory=StyledPilImage, module_drawer=VerticalBarsDrawer())
+img6 = qr.make_image(image_factory=StyledPilImage, module_drawer=HorizontalBarsDrawer())
+img1.save(<span class="hljs-string">'qrcode1.png'</span>)
+img2.save(<span class="hljs-string">'qrcode2.png'</span>)
+img3.save(<span class="hljs-string">'qrcode3.png'</span>)
+img4.save(<span class="hljs-string">'qrcode4.png'</span>)
+img5.save(<span class="hljs-string">'qrcode5.png'</span>)
+img6.save(<span class="hljs-string">'qrcode6.png'</span>)
+</code></pre><p><span>輸出:</span></p><table>
+<thead>
+<tr>
+<th style="text-align:center"><img src="https://i.imgur.com/m83xvXt.png" alt="" loading="lazy"><br><span>原始方格</span></th>
+<th style="text-align:center"><img src="https://i.imgur.com/Xmterds.png" alt="" loading="lazy"><br><span>小方塊</span></th>
+<th style="text-align:center"><img src="https://i.imgur.com/NXcD88k.png" alt="" loading="lazy"><br><span>原點</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><img src="https://i.imgur.com/5Z3iosk.png" alt="" loading="lazy"><br><span>圓角方格</span></td>
+<td style="text-align:center"><img src="https://i.imgur.com/a7c9u5A.png" alt="" loading="lazy"><br><span>直線</span></td>
+<td style="text-align:center"><img src="https://i.imgur.com/93lVdOX.png" alt="" loading="lazy"><br><span>橫線</span></td>
+</tr>
+</tbody>
+</table><h4 id="使用5加入漸層" data-id="使用5加入漸層"><a class="anchor hidden-xs" href="#使用5加入漸層" title="使用5加入漸層"><span class="octicon octicon-link"></span></a><span>使用5:加入漸層</span></h4><table>
+<thead>
+<tr>
+<th><span>漸層填色方式</span></th>
+<th><span>參數</span></th>
+<th><span>說明</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span>SolidFillColorMask()</span></td>
+<td><span>(背景、填充)</span></td>
+<td><span>預設填滿顏色</span></td>
+</tr>
+<tr>
+<td><span>RadialGradiantColorMask()</span></td>
+<td><span>(背景、中心、四周)</span></td>
+<td><span>圓形放射漸層</span></td>
+</tr>
+<tr>
+<td><span>SquareGradiantColorMask()</span></td>
+<td><span>(背景、中心、四周)</span></td>
+<td><span>方形放射漸層</span></td>
+</tr>
+<tr>
+<td><span>VerticalGradiantColorMask()</span></td>
+<td><span>(背景、上方、下方)</span></td>
+<td><span>垂直漸層</span></td>
+</tr>
+<tr>
+<td><span>HorizontalGradiantColorMask()</span></td>
+<td><span>(背景、左側、右側)</span></td>
+<td><span>水平漸層</span></td>
+</tr>
+<tr>
+<td><span>ImageColorMask()</span></td>
+<td><span>(背景、圖片位址)</span></td>
+<td><span>圖片填充</span></td>
+</tr>
+</tbody>
+</table><pre><code class="python hljs"><span class="hljs-keyword">import</span> qrcode
+<span class="hljs-keyword">from</span> qrcode.image.styledpil <span class="hljs-keyword">import</span> StyledPilImage
+<span class="hljs-keyword">from</span> qrcode.image.styles.moduledrawers <span class="hljs-keyword">import</span> RoundedModuleDrawer
+<span class="hljs-keyword">from</span> qrcode.image.styles.colormasks <span class="hljs-keyword">import</span> SolidFillColorMask, RadialGradiantColorMask, SquareGradiantColorMask, VerticalGradiantColorMask, HorizontalGradiantColorMask,ImageColorMask
 
-</code></pre><p><img src="https://i.imgur.com/RVEr5NA.png" alt="" loading="lazy"><br>
-<img src="https://i.imgur.com/lSbnHhY.png" alt="" loading="lazy"></p><hr><h2 id="應用" data-id="應用"><a class="anchor hidden-xs" href="#應用" title="應用"><span class="octicon octicon-link"></span></a><span>應用:</span></h2><h3 id="成品1" data-id="成品1"><a class="anchor hidden-xs" href="#成品1" title="成品1"><span class="octicon octicon-link"></span></a><span>成品1:</span></h3><pre><code class="python hljs"><span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> YouTube
-<span class="hljs-keyword">from</span> pytube <span class="hljs-keyword">import</span> Playlist
-<span class="hljs-keyword">from</span> pytube.cli <span class="hljs-keyword">import</span> on_progress
-<span class="hljs-keyword">import</span> os 
-<span class="hljs-comment">#影片下載</span>
-<span class="hljs-keyword">def</span> <span class="hljs-title function_">download_video</span>(<span class="hljs-params">yt_url</span>):
-    <span class="hljs-keyword">for</span> video_url <span class="hljs-keyword">in</span> yt_url:
-        yt=YouTube(video_url,on_progress_callback=on_progress)
-        yt.streams.get_highest_resolution().download(<span class="hljs-string">'video/'</span>)
-        <span class="hljs-built_in">print</span>(yt.title+<span class="hljs-string">'已下載\n'</span>)
-<span class="hljs-comment">#音樂下載</span>
-<span class="hljs-keyword">def</span> <span class="hljs-title function_">download_music</span>(<span class="hljs-params">yt_url</span>):
-    <span class="hljs-keyword">for</span> music_url <span class="hljs-keyword">in</span> yt_url:
-        yt=YouTube(music_url,on_progress_callback=on_progress)
-        music_file=yt.streams.get_audio_only().download(<span class="hljs-string">'music/'</span>)
-        base, ext = os.path.splitext(music_file)
-        new_file = base + <span class="hljs-string">'.mp3'</span>
-        os.rename(music_file, new_file)
-        <span class="hljs-built_in">print</span>(yt.title+<span class="hljs-string">'已下載\n'</span>)
-<span class="hljs-comment">#主函式:</span>
-<span class="hljs-keyword">while</span>(<span class="hljs-literal">True</span>):
-    <span class="hljs-built_in">print</span>(<span class="hljs-string">"youtube影片/音樂下載:\n"</span>)
-    url=<span class="hljs-built_in">input</span>(<span class="hljs-string">'請貼上網址:\n'</span>)
-    <span class="hljs-comment">#簡易判斷是否為yt網址</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-string">'https://youtu'</span> <span class="hljs-keyword">in</span> url <span class="hljs-keyword">or</span> <span class="hljs-string">'https://www.youtu'</span> <span class="hljs-keyword">in</span> url:
-        <span class="hljs-comment">#判斷是否為播放清單</span>
-        <span class="hljs-keyword">if</span> <span class="hljs-string">'playlist'</span> <span class="hljs-keyword">in</span> url:
-            <span class="hljs-built_in">print</span>(<span class="hljs-string">'確認為播放清單:'</span>)
-            download_model=<span class="hljs-built_in">input</span>(<span class="hljs-string">'輸入1下載音樂，輸入任意為下載影片:'</span>)
-            <span class="hljs-keyword">if</span> download_model==<span class="hljs-string">'1'</span>:
-                <span class="hljs-built_in">print</span>(<span class="hljs-string">'確認下載音樂'</span>)
-                download_music(Playlist(url))
-            <span class="hljs-keyword">else</span>:
-                <span class="hljs-built_in">print</span>(<span class="hljs-string">'確認下載影片'</span>)
-                download_video(Playlist(url))
-        <span class="hljs-comment">#為單一影片</span>
-        <span class="hljs-keyword">else</span>:
-            <span class="hljs-built_in">print</span>(<span class="hljs-string">'確認為單一網址'</span>)
-            download_model=<span class="hljs-built_in">input</span>(<span class="hljs-string">'輸入1下載音樂，輸入任意為下載影片:'</span>)
-            <span class="hljs-keyword">if</span> download_model==<span class="hljs-string">'1'</span>:
-                <span class="hljs-built_in">print</span>(<span class="hljs-string">'確認下載音樂'</span>)
-                <span class="hljs-comment">#因為播放清單資料以tuple保存，為避免再寫一個子程式處理，浪費空間將他也以tuple保存</span>
-                download_music({url})
-            <span class="hljs-keyword">else</span>:
-                <span class="hljs-built_in">print</span>(<span class="hljs-string">'確認下載影片'</span>)
-                download_video({url})
-    <span class="hljs-keyword">else</span>:
-        <span class="hljs-built_in">print</span>(<span class="hljs-string">"網址錯誤"</span>)
-    <span class="hljs-built_in">input</span>(<span class="hljs-string">"---下載完成----"</span>)
-</code></pre><hr><hr><hr><hr></div>
+qr = qrcode.QRCode(
+    version=<span class="hljs-number">5</span>,
+    error_correction=qrcode.constants.ERROR_CORRECT_L,
+    box_size=<span class="hljs-number">10</span>,
+    border=<span class="hljs-number">4</span>
+)
+qr.add_data(<span class="hljs-string">'https://k0976670xxx.github.io/my_notes/'</span>)
+qr.make(fit=<span class="hljs-literal">True</span>)
+
+img1 = qr.make_image(image_factory=StyledPilImage, color_mask=SolidFillColorMask((<span class="hljs-number">255</span>,<span class="hljs-number">255</span>,<span class="hljs-number">255</span>),(<span class="hljs-number">255</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>)), module_drawer=RoundedModuleDrawer())
+img2 = qr.make_image(image_factory=StyledPilImage, color_mask=RadialGradiantColorMask((<span class="hljs-number">255</span>,<span class="hljs-number">255</span>,<span class="hljs-number">255</span>),(<span class="hljs-number">255</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>),(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">255</span>)), module_drawer=RoundedModuleDrawer())
+img3 = qr.make_image(image_factory=StyledPilImage, color_mask=SquareGradiantColorMask((<span class="hljs-number">255</span>,<span class="hljs-number">255</span>,<span class="hljs-number">255</span>),(<span class="hljs-number">255</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>),(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">255</span>)), module_drawer=RoundedModuleDrawer())
+img4 = qr.make_image(image_factory=StyledPilImage, color_mask=VerticalGradiantColorMask((<span class="hljs-number">255</span>,<span class="hljs-number">255</span>,<span class="hljs-number">255</span>),(<span class="hljs-number">255</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>),(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">255</span>)), module_drawer=RoundedModuleDrawer())
+img5 = qr.make_image(image_factory=StyledPilImage, color_mask=HorizontalGradiantColorMask((<span class="hljs-number">255</span>,<span class="hljs-number">255</span>,<span class="hljs-number">255</span>),(<span class="hljs-number">255</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>),(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">255</span>)), module_drawer=RoundedModuleDrawer())
+img6 = qr.make_image(image_factory=StyledPilImage, color_mask=ImageColorMask((<span class="hljs-number">255</span>,<span class="hljs-number">255</span>,<span class="hljs-number">255</span>),<span class="hljs-string">"01.jpg"</span>),module_drawer=RoundedModuleDrawer())
+
+img1.save(<span class="hljs-string">'qrcode1.png'</span>)
+img2.save(<span class="hljs-string">'qrcode2.png'</span>)
+img3.save(<span class="hljs-string">'qrcode3.png'</span>)
+img4.save(<span class="hljs-string">'qrcode4.png'</span>)
+img5.save(<span class="hljs-string">'qrcode5.png'</span>)
+img6.save(<span class="hljs-string">'qrcode6.png'</span>)
+</code></pre><table>
+<thead>
+<tr>
+<th><img src="https://i.imgur.com/Qo7Wbfn.png" alt="" loading="lazy"></th>
+<th><img src="https://i.imgur.com/2HWorgV.png" alt="" loading="lazy"></th>
+<th><img src="https://i.imgur.com/DlVFOCC.png" alt="" loading="lazy"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="https://i.imgur.com/zc2zY8b.png" alt="" loading="lazy"></td>
+<td><img src="https://i.imgur.com/qck1zhd.png" alt="" loading="lazy"></td>
+<td><img src="https://i.imgur.com/8UBLZ4i.png" alt="" loading="lazy"></td>
+</tr>
+</tbody>
+</table><h4 id="使用6在中心加圖案logo" data-id="使用6在中心加圖案logo"><a class="anchor hidden-xs" href="#使用6在中心加圖案logo" title="使用6在中心加圖案logo"><span class="octicon octicon-link"></span></a><span>使用6:在中心加圖案(logo)</span></h4><pre><code class="python hljs"><span class="hljs-keyword">import</span> qrcode
+<span class="hljs-keyword">from</span> qrcode.image.styledpil <span class="hljs-keyword">import</span> StyledPilImage
+qr = qrcode.QRCode(
+    version=<span class="hljs-number">1</span>,
+    error_correction=qrcode.constants.ERROR_CORRECT_L,
+    box_size=<span class="hljs-number">10</span>,<span class="hljs-comment">#若想確保中心圖片清楚可以調高這個</span>
+    border=<span class="hljs-number">4</span>
+)
+qr.add_data(<span class="hljs-string">'https://k0976670xxx.github.io/my_notes/'</span>)
+qr.make(fit=<span class="hljs-literal">True</span>)
+img = qr.make_image(image_factory=StyledPilImage, embeded_image_path=<span class="hljs-string">'chino.jpg'</span>)
+img.save(<span class="hljs-string">'qrcode.png'</span>)
+</code></pre><p><span>  輸出結果:</span><img src="https://i.imgur.com/HLRDy5z.png" alt="" width="200" height="200" loading="lazy"></p></div>
     <div class="ui-toc dropup unselectable hidden-print" style="display:none;">
         <div class="pull-right dropdown">
             <a id="tocLabel" class="ui-toc-label btn btn-default" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" title="Table of content">
@@ -157,22 +279,10 @@ yt.streams.get_highest_resolution().download(<span class="hljs-string">'video/'<
             </a>
             <ul id="ui-toc" class="ui-toc-dropdown dropdown-menu" aria-labelledby="tocLabel">
                 <div class="toc"><ul class="nav">
-<li><a href="#pytube_youtube影片下載用" title="pytube_youtube影片下載用:">pytube_youtube影片下載用:</a><ul class="nav">
-<li><a href="#pytube簡介" title="pytube簡介:">pytube簡介:</a></li>
-<li><a href="#基本用法" title="基本用法:">基本用法:</a><ul class="nav">
-<li><a href="#從yt影片網址取得影片數據" title="從yt影片網址取得影片數據:">從yt影片網址取得影片數據:</a></li>
-<li><a href="#擷取影音流" title="擷取影音流:">擷取影音流:</a></li>
-<li><a href="#下載影片" title="下載影片:">下載影片:</a></li>
-<li><a href="#下載音樂" title="下載音樂:">下載音樂:</a></li>
-<li><a href="#處理播放清單" title="處理播放清單:">處理播放清單:</a></li>
-</ul>
-</li>
-<li><a href="#補充資料" title="補充資料:">補充資料:</a><ul class="nav">
-<li><a href="#顯示下載進度" title="顯示下載進度:">顯示下載進度:</a></li>
-</ul>
-</li>
-<li><a href="#應用" title="應用:">應用:</a><ul class="nav">
-<li><a href="#成品1" title="成品1:">成品1:</a></li>
+<li><a href="#qrcode函式庫" title="qrcode函式庫:">qrcode函式庫:</a><ul class="nav">
+<li><a href="#qcode函式庫介紹" title="qcode函式庫介紹:">qcode函式庫介紹:</a><ul class="nav">
+<li><a href="#qrcode函式庫基礎用法篇" title="qrcode函式庫基礎用法篇:">qrcode函式庫基礎用法篇:</a></li>
+<li><a href="#qrcode函式庫進階設定" title="qrcode函式庫進階設定:">qrcode函式庫進階設定:</a></li>
 </ul>
 </li>
 </ul>
@@ -184,22 +294,10 @@ yt.streams.get_highest_resolution().download(<span class="hljs-string">'video/'<
     </div>
     <div id="ui-toc-affix" class="ui-affix-toc ui-toc-dropdown unselectable hidden-print" data-spy="affix" style="top:17px;display:none;" null null>
         <div class="toc"><ul class="nav">
-<li><a href="#pytube_youtube影片下載用" title="pytube_youtube影片下載用:">pytube_youtube影片下載用:</a><ul class="nav">
-<li><a href="#pytube簡介" title="pytube簡介:">pytube簡介:</a></li>
-<li><a href="#基本用法" title="基本用法:">基本用法:</a><ul class="nav">
-<li><a href="#從yt影片網址取得影片數據" title="從yt影片網址取得影片數據:">從yt影片網址取得影片數據:</a></li>
-<li><a href="#擷取影音流" title="擷取影音流:">擷取影音流:</a></li>
-<li><a href="#下載影片" title="下載影片:">下載影片:</a></li>
-<li><a href="#下載音樂" title="下載音樂:">下載音樂:</a></li>
-<li><a href="#處理播放清單" title="處理播放清單:">處理播放清單:</a></li>
-</ul>
-</li>
-<li><a href="#補充資料" title="補充資料:">補充資料:</a><ul class="nav">
-<li><a href="#顯示下載進度" title="顯示下載進度:">顯示下載進度:</a></li>
-</ul>
-</li>
-<li><a href="#應用" title="應用:">應用:</a><ul class="nav">
-<li><a href="#成品1" title="成品1:">成品1:</a></li>
+<li><a href="#qrcode函式庫" title="qrcode函式庫:">qrcode函式庫:</a><ul class="nav">
+<li><a href="#qcode函式庫介紹" title="qcode函式庫介紹:">qcode函式庫介紹:</a><ul class="nav">
+<li><a href="#qrcode函式庫基礎用法篇" title="qrcode函式庫基礎用法篇:">qrcode函式庫基礎用法篇:</a></li>
+<li><a href="#qrcode函式庫進階設定" title="qrcode函式庫進階設定:">qrcode函式庫進階設定:</a></li>
 </ul>
 </li>
 </ul>
