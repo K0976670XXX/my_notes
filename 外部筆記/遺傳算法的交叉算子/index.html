@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>.passport-login-container{position: fixed;top: 0;left: 0;z-index: 9999;width: 100%;height: 100%;}.passport-login-box{position: absolute;display: block;border-radius: 8px;left: 50%;top: 50%;z-index: 10001;-webkit-transform: translate(-50%, -50%);-ms-transform: translate(-50%, -50%);-o-transform: translate(-50%, -50%);-moz-transform: translate(-50%, -50%);transform: translate(-50%, -50%);background-color: #fff;}.passport-login-mark{position: absolute;top: 0;left: 0;z-index: 9999;background-color: rgba(0, 0, 0, 0.5);width: 100%;height: 100%;}</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>遺傳算法的交叉算子：部分匹配交叉（PMX）、有序交叉（OX）、循環交叉（CX）、兩點交叉等講解_腦電永不過時的博客-CSDN博客_pmx算法</title>
+        <meta name="keywords" content="pmx算法">
+        <meta name="csdn-baidu-search" content="{&quot;autorun&quot;:true,&quot;install&quot;:true,&quot;keyword&quot;:&quot;pmx算法&quot;}">
+    <meta name="description" content="目錄1. 部分匹配交叉（Partially-matched crossover，PMX）2.單點交叉（Single-point crossover）3.兩點交叉（Two-points crossover）4.多點交叉（Multi-point crossover）5. 均勻交叉（Uniform crossover）6. 順序交叉（Order Crossover，OX）7. 基於位置的交叉（Position-based Crossover，PBX）8. 基於順序的交叉（Order-Based Crossover">
+    <script src="./遺傳算法的交叉算子/blog.js.下載" type="text/javascript"></script>
+        <link rel="stylesheet" type="text/css" href="./遺傳算法的交叉算子/detail_enter-9e81df2e6a.min.css">
+    <style>
+        #content_views pre{
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none; 
+            user-select: none; 
+        }
+        #content_views pre code{
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none; 
+            user-select: none; 
+        }
+    </style>
+        <link rel="stylesheet" type="text/css" href="./遺傳算法的交叉算子/skin-number-2c93789924.min.css">
+    <script src="./遺傳算法的交叉算子/jquery-1.9.1.min.js.下載" type="text/javascript"></script>
+    <script src="./遺傳算法的交叉算子/saved_resource(1)" type="text/javascript"></script>
+    <script src="./遺傳算法的交叉算子/report.js.下載" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="./遺傳算法的交叉算子/sandalstrap.min.css">
+    <style>
+        .MathJax, .MathJax_Message, .MathJax_Preview{
+            display: none
+        }
+    </style>
+    <script src="./遺傳算法的交叉算子/ds.js.下載"></script>
+<link rel="stylesheet" type="text/css" href="./遺傳算法的交叉算子/csdn-toolbar-default.css"><script type="text/javascript" src="./遺傳算法的交叉算子/csdn-notification.js.下載"></script><link rel="stylesheet" type="text/css" href="./遺傳算法的交叉算子/user-login.css"><link rel="stylesheet" type="text/css" href="./遺傳算法的交叉算子/collection-box.css"><link rel="stylesheet" type="text/css" href="./遺傳算法的交叉算子/user-tooltip.css"><link rel="stylesheet" type="text/css" href="./遺傳算法的交叉算子/user-medal.css"><script type="text/javascript" src="./遺傳算法的交叉算子/html2canvas.min.js.下載"></script><meta http-equiv="origin-trial" content="AzoawhTRDevLR66Y6MROu167EDncFPBvcKOaQispTo9ouEt5LvcBjnRFqiAByRT+2cDHG1Yj4dXwpLeIhc98/gIAAACFeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjYxMjk5MTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A6+nc62kbJgC46ypOwRsNW6RkDn2x7tgRh0wp7jb3DtFF7oEhu1hhm4rdZHZ6zXvnKZLlYcBlQUImC4d3kKihAcAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjYxMjk5MTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A/9La288e7MDEU2ifusFnMg1C2Ij6uoa/Z/ylwJIXSsWfK37oESIPbxbt4IU86OGqDEPnNVruUiMjfKo65H/CQwAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjYxMjk5MTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="AzoawhTRDevLR66Y6MROu167EDncFPBvcKOaQispTo9ouEt5LvcBjnRFqiAByRT+2cDHG1Yj4dXwpLeIhc98/gIAAACFeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjYxMjk5MTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A6+nc62kbJgC46ypOwRsNW6RkDn2x7tgRh0wp7jb3DtFF7oEhu1hhm4rdZHZ6zXvnKZLlYcBlQUImC4d3kKihAcAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjYxMjk5MTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A/9La288e7MDEU2ifusFnMg1C2Ij6uoa/Z/ylwJIXSsWfK37oESIPbxbt4IU86OGqDEPnNVruUiMjfKo65H/CQwAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjYxMjk5MTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="AzoawhTRDevLR66Y6MROu167EDncFPBvcKOaQispTo9ouEt5LvcBjnRFqiAByRT+2cDHG1Yj4dXwpLeIhc98/gIAAACFeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjYxMjk5MTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A6+nc62kbJgC46ypOwRsNW6RkDn2x7tgRh0wp7jb3DtFF7oEhu1hhm4rdZHZ6zXvnKZLlYcBlQUImC4d3kKihAcAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjYxMjk5MTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><meta http-equiv="origin-trial" content="A/9La288e7MDEU2ifusFnMg1C2Ij6uoa/Z/ylwJIXSsWfK37oESIPbxbt4IU86OGqDEPnNVruUiMjfKo65H/CQwAAACLeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjYxMjk5MTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZSwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ=="><style type="text/css">.hljs-ln{border-collapse:collapse}            .hljs-ln td{padding:0}            .hljs-ln-n{text-align: right;padding-right: 8px;}            .hljs-ln-n:before{content:attr(data-line-number)}</style><style type="text/css">pre{position: relative}pre:hover .code-full-screen{display:none !important;}.code-full-screen{display: none !important;position: absolute;right: 4px;top: 3px;width: 24px !important;height: 24px !important;margin: 4px !important;}pre:hover .hljs-button{display: block}.hljs-button{display: none;position: absolute;right: 4px;top: 4px;font-size: 12px;color: #ffffff;background-color: #9999AA;padding: 2px 8px;margin: 8px;border-radius: 4px;cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.05);}.hljs-button:after{content: attr(data-title)}code .hljs-button{margin: 2px 8px;}</style><link rel="stylesheet" type="text/css" href="./遺傳算法的交叉算子/user-accusation.css"><link rel="stylesheet" type="text/css" href="./遺傳算法的交叉算子/user-ordertip.css"><link rel="stylesheet" type="text/css" href="./遺傳算法的交叉算子/order-payment.css"><link rel="stylesheet" type="text/css" href="./遺傳算法的交叉算子/side-toolbar.css"><link rel="stylesheet" type="text/css" href="./遺傳算法的交叉算子/csdn-footer.css"><style type="text/css">#_copy{align-items:center;background:#4494d5;border-radius:3px;color:#fff;cursor:pointer;display:flex;font-size:13px;height:30px;justify-content:center;position:absolute;width:60px;z-index:1000}#select-tooltip,#sfModal,.modal-backdrop,div[id^=reader-helper]{display:none!important}.modal-open{overflow:auto!important}._sf_adjust_body{padding-right:0!important}.super_copy_btns_div{position:fixed;width:154px;left:10px;top:45%;background:#e7f1ff;border:2px solid #4595d5;font-weight:600;border-radius:2px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;z-index:5000}.super_copy_btns_logo{width:100%;background:#4595d5;text-align:center;font-size:12px;color:#e7f1ff;line-height:30px;height:30px}.super_copy_btns_btn{display:block;width:128px;height:28px;background:#7f5711;border-radius:4px;color:#fff;font-size:12px;border:0;outline:0;margin:8px auto;font-weight:700;cursor:pointer;opacity:.9}.super_copy_btns_btn:hover{opacity:.8}.super_copy_btns_btn:active{opacity:1}</style><link rel="preload" href="./遺傳算法的交叉算子/f(9).txt" as="script"><script type="text/javascript" src="./遺傳算法的交叉算子/f(9).txt"></script><link rel="preload" href="./遺傳算法的交叉算子/f(10).txt" as="script"><script type="text/javascript" src="./遺傳算法的交叉算子/f(10).txt"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><script async="" src="./遺傳算法的交叉算子/ca-pub-1076724771190722"></script><script async="" src="./遺傳算法的交叉算子/AGSKWxWQDMDlvVETqWXX5GOvtoQLacpjnQuF6KxLrQgBVYtpSy5GqQHfyx7SRdwsHWzJoaduMScneFC68xpZ2mkw3lc="></script><script async="" src="./遺傳算法的交叉算子/AGSKWxUsJsfXEQKSYKKxjIaGy5_dK0GWtW-_sRTAIJUbcL43s5fBgpJJ9IWHXA5rA2CIcJs_Gq2PkFOGSJLrcXouG5dot29ZPKATR_PLV22DZobxb8phuugyc_8Gja-n8WBYA1tNPvGqtS-ME7jJs49fXxNpP-d"></script><script async="" src="./遺傳算法的交叉算子/AGSKWxWYQCiGPy2moJPUwnIjGn3vAiWHEEwKwhQPsjoFeZ87gqSEduObpMcelwUqE1ktDV7Gv07UgqBAoFg57dEoIFHx6jlHtN87oiNOrZTbcdmtmvKae17jnAJYhQKG6oczyOYUEwL7t7RHJOA11qf0m7x4kAz"></script><style id="supercopy_user_select">*{user-select: text !important;-webkit-user-select: text !important;-webkit-touch-callout: text !important;}</style><style>
+        .wwads-horizontal,.wwads-vertical{background-color:#f4f8fa;padding:5px;min-height:120px;margin-top:20px;box-sizing:border-box;border-radius:3px;font-family:sans-serif;display:flex;min-width:150px;position:relative;overflow:hidden}.wwads-horizontal{flex-wrap:wrap;justify-content:center}.wwads-vertical{flex-direction:column;align-items:center;padding-bottom:32px}.wwads-horizontal a,.wwads-vertical a{text-decoration:none}.wwads-horizontal .wwads-content,.wwads-horizontal .wwads-img,.wwads-vertical .wwads-content,.wwads-vertical .wwads-img{margin:5px}.wwads-horizontal .wwads-content{flex:130px;text-align:left}.wwads-vertical .wwads-content{margin-top:10px;text-align:left}.wwads-content .wwads-text,.wwads-horizontal .wwads-text{font-size:14px;line-height:1.4;color:#0e1011;-webkit-font-smoothing:antialiased;word-break:break-word}.wwads-horizontal .wwads-poweredby,.wwads-vertical .wwads-poweredby{display:flex;align-items:center;margin-top:1em}.wwads-vertical .wwads-poweredby{position:absolute;left:10px;bottom:10px;display:flex;align-items:center}.wwads-horizontal .wwads-poweredby .wwads-logo,.wwads-vertical .wwads-poweredby .wwads-logo{background:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 210' fill='%23a6b7bf'%3E%3Cpath d='M24.25 211.46L0 197.46l57-98.73a74.004 74.004 0 11128.18 74l-7 12.12-24.25-14 7-12.12a46.002 46.002 0 00-79.68-46z'/%3E%3Cpath d='M121.21 209.73a74.07 74.07 0 01-64.21-37l-7-12.12 24.25-14 7 12.12a46.002 46.002 0 1079.68-46l-57-98.73 24.25-14 57 98.73a74 74 0 01-64 111z'/%3E%3Cpath d='M235.09 209.73h-114a74 74 0 010-148h14v28h-14a46 46 0 000 92h114z'/%3E%3C/svg%3E") no-repeat;padding:0 1px 11px 11px}.wwads-horizontal .wwads-poweredby .wwads-logo-text,.wwads-vertical .wwads-poweredby .wwads-logo-text{font-size:11px;margin-left:.6px;color:#a6b7bf}.wwads-horizontal .wwads-hide,.wwads-vertical .wwads-hide{position:absolute;right:-23px;bottom:-23px;width:46px;height:46px;border-radius:23px;transition:all .3s ease-in-out;cursor:pointer}.wwads-horizontal .wwads-hide .hide-svg,.wwads-vertical .wwads-hide .hide-svg{position:absolute;left:10px;top:10px;background:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='7' fill='%23a6b7bf'%3E%3Cpath d='M.879.672L3 2.793 5.121.672a.5.5 0 11.707.707L3.708 3.5l2.12 2.121a.5.5 0 11-.707.707l-2.12-2.12-2.122 2.12a.5.5 0 11-.707-.707l2.121-2.12L.172 1.378A.5.5 0 01.879.672z'/%3E%3C/svg%3E") no-repeat}.wwads-horizontal .wwads-hide:hover,.wwads-vertical .wwads-hide:hover{background:rgb(0 0 0/.05)}
+        </style></head>
+  <body class="nodata " style="" _c_t_common="1" _c_t_j1="1"><div id="MathJax_Message" style="display: none;">
+  </div>
+</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+<link rel="stylesheet" href="./遺傳算法的交叉算子/blog_code-01256533b5.min.css">
+<link rel="stylesheet" href="./遺傳算法的交叉算子/chart-3456820cac.css">
+
+<div class="main_father clearfix d-flex justify-content-center" style="height: auto !important;"> 
+    <div class="container clearfix" id="mainBox" style="height: auto !important;">
+        <script>
+        if(!isCookieConcision){
+            $('.main_father').removeClass('mainfather-concision')
+            $('.main_father .container').removeClass('container-concision')
+        }
+        </script>
+        <main>
+<script type="text/javascript">
+    function getQueryString(name) {   
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //構造一個含有目標參數的正則表達式對象  
+      var r = window.location.search.substr(1).match(reg);  //匹配目標參數
+      if( r != null ) return decodeURIComponent( r[2] ); return '';   
+    }
+    function stripscript(s){ 
+      var pattern = new RegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？%]") 
+      var rs = ""; 
+      for (var i = 0; i < s.length; i++) { 
+        rs = rs+s.substr(i, 1).replace(pattern, ''); 
+      } 
+      return rs; 
+    }
+    var blogHotWords = stripscript(getQueryString('utm_term')).length > 1 ? stripscript(getQueryString('utm_term')) : ''
+</script>
+<div class="blog-content-box">
+        <div class="article-header-box">
+        <div class="article-header">
+            <div class="article-title-box">
+                <h1 class="title-article" id="articleContentId">遺傳算法的交叉算子：部分匹配交叉（PMX）、有序交叉（OX）、循環交叉（CX）、兩點交叉等講解</h1>
+            </div>
+        </div>
+    </div>
+    <article class="baidu_pl">
+        <div id="article_content" class="article_content clearfix" style="height: 8300px; overflow: hidden;">
+        <link rel="stylesheet" href="./遺傳算法的交叉算子/ck_htmledit_views-bbac9290cd.css">
+                <div id="content_views" class="htmledit_views">
+                    <p id="main-toc"><strong>目錄</strong></p> 
+<p id="" style="margin: 0px 0px 2px 48px; padding-left: 24px;"><a href="#t0" target="_self">1. 部分匹配交叉（Partially-matched crossover，PMX）</a></p> 
+<p id="" style="margin: 0px 0px 2px 48px; padding-left: 24px;"><a href="#t1" target="_self">2.單點交叉（Single-point crossover）</a></p> 
+<p id="" style="margin: 0px 0px 2px 48px; padding-left: 24px;"><a href="#t2" target="_self">3.兩點交叉（Two-points crossover）</a></p> 
+<p id="" style="margin: 0px 0px 2px 48px; padding-left: 24px;"><a href="#t3" target="_self">4.多點交叉（Multi-point crossover）</a></p> 
+<p id="" style="margin: 0px 0px 2px 48px; padding-left: 24px;"><a href="#t4" target="_self">5. 均勻交叉（Uniform crossover）</a></p> 
+<p id="" style="margin: 0px 0px 2px 48px; padding-left: 24px;"><a href="#t5" target="_self">6. 順序交叉（Order Crossover，OX）</a></p> 
+<p id="" style="margin: 0px 0px 2px 48px; padding-left: 24px;"><a href="#t6" target="_self">7. 基於位置的交叉（Position-based Crossover，PBX）</a></p> 
+<p id="" style="margin: 0px 0px 2px 48px; padding-left: 24px;"><a href="#t7" target="_self">8. 基於順序的交叉（Order-Based Crossover，OBX）</a></p> 
+<p id="" style="margin: 0px 0px 2px 48px; padding-left: 24px;"><a href="#t8" target="_self">9. 循環交叉（Cycle Crossover，CX）</a></p> 
+<p id="" style="margin: 0px 0px 2px 48px; padding-left: 24px;"><a href="#t9" target="_self">10. 子路徑交叉交叉（Subtour Exchange Crossover，SEX）</a></p> 
+<hr>
+<h2 id="1.%20%E9%83%A8%E5%88%86%E5%8C%B9%E9%85%8D%E4%BA%A4%E5%8F%89%EF%BC%88Partially-matched%20crossover%EF%BC%8CPMX%EF%BC%89"><a name="t0"></a>1. 部分匹配交叉（Partially-matched crossover，PMX）</h2> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;部分匹配交叉保證了每個染色體中的基因僅出現一次，通過該交叉策略在一個染色體中不會出現重複的基因，所以PMX經常用於旅行商（TSP）或其他排序問題編碼。<br> PMX類似於兩點交叉，通過隨機選擇兩個交叉點確定交叉區域。執行交叉后一般會得到兩個無效的染色體，個別基因會出現重複的情況，為了修復染色體，可以在交叉區域內建立每個染色體的匹配關係，然後在交叉區域外對重複基因應用此匹配關係就可以消除衝突。</p> 
+<p id="%E8%BF%87%E7%A8%8B%EF%BC%9A">過程：</p> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;第一步，隨機選擇一對染色體（父代）中幾個基因的起止位置（兩染色體被選位置相同）</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" height="201" src="./遺傳算法的交叉算子/2019120215402550.png" width="400"></p> 
+<p><br> &nbsp; &nbsp; &nbsp; &nbsp;第二步：交換這兩組基因的位置。</p> 
+<p>&nbsp;</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" height="120" src="./遺傳算法的交叉算子/20191202154054749.png" width="400"></p> 
+<p></p> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;第三步：做衝突檢測，根據交換的兩組基因建立一個映射關係，如圖所示，以7-5-2這一映射關係為例，可以看到第二步結果中子代1存在兩個基因7，這時將其通過映射關係轉變為基因2，以此類推至沒有衝突為止。最後所有衝突的基因都會經過映射，保證形成的新一對子代基因無衝突。</p> 
+<p>最終結果為：</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" height="126" src="./遺傳算法的交叉算子/20191202154130802.png" width="400"></p> 
+<p id="%E5%8A%A8%E7%94%BB%E6%95%88%E6%9E%9C%E5%A6%82%E4%B8%8B%EF%BC%9A">動畫效果如下：</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" src="./遺傳算法的交叉算子/20191202154244469.gif"></p> 
+<h2 id="2.%E5%8D%95%E7%82%B9%E4%BA%A4%E5%8F%89%EF%BC%88Single-point%20crossover%EF%BC%89"><a name="t1"></a>2.單點交叉（Single-point crossover）</h2> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;單點交叉通過選取兩條染色體，在隨機選擇的位置點上進行分割並交換右側的部分，從而得到兩個不同的子染色體。單點交叉是經典的交叉形式，與多點交叉或均勻交叉相比，它交叉混合的速度較慢（因為將染色體分成兩段進行交叉，這種方式交叉粒度較大），然而對於選取交叉點位置具有一定內在含義的問題而言，單點交叉可以造成更小的破壞。</p> 
+<p id="%E5%8A%A8%E7%94%BB%E6%95%88%E6%9E%9C%E5%A6%82%E4%B8%8B%EF%BC%9A">動畫效果如下：</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" src="./遺傳算法的交叉算子/20191202151959116.gif"></p> 
+<hr>
+<h2 id="3.%E4%B8%A4%E7%82%B9%E4%BA%A4%E5%8F%89%EF%BC%88Two-points%20crossover%EF%BC%89"><a name="t2"></a>3.兩點交叉（Two-points crossover）</h2> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;兩點交叉是指在個體染色體中隨機設置了兩個交叉點，然後再進行部分基因交換。</p> 
+<p id="%E8%BF%87%E7%A8%8B%EF%BC%9A">過程：</p> 
+<p>1.在相互配對的兩個個體編碼串中隨機設置兩個交叉點；<br> 2.交換兩個個體在所設定的兩個交叉點之間的部分染色體。</p> 
+<p id="%E5%8A%A8%E7%94%BB%E6%95%88%E6%9E%9C%E5%A6%82%E4%B8%8B%EF%BC%9A">動畫效果如下：</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" src="./遺傳算法的交叉算子/20191202152133536.gif"></p> 
+<hr>
+<h2 id="4.%E5%A4%9A%E7%82%B9%E4%BA%A4%E5%8F%89%EF%BC%88Multi-point%20crossover%EF%BC%89"><a name="t3"></a>4.多點交叉（Multi-point crossover）</h2> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;多點交叉或稱廣義交叉，是指在個體染色體中隨機設置多個交叉點，然後進行基因交換。其操作過程與單點交叉和兩點交叉相類似。如果多點交叉只選擇了一個交叉點，那麼多點交叉就變成了單點交叉。</p> 
+<p id="%E5%8A%A8%E7%94%BB%E6%95%88%E6%9E%9C%E5%A6%82%E4%B8%8B%EF%BC%9A">動畫效果如下：</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" src="./遺傳算法的交叉算子/20191202152908184.gif"></p> 
+<hr>
+<h2 id="5.%20%E5%9D%87%E5%8C%80%E4%BA%A4%E5%8F%89%EF%BC%88Uniform%20crossover%EF%BC%89"><a name="t4"></a>5. 均勻交叉（Uniform crossover）</h2> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;均勻交叉也稱一致交叉，在均勻交叉中，兩個染色體的索引i處的基因以交換概率pS進行交換。經驗研究表明，均勻交叉比是一種更具利用性的方法，這樣可以更好地搜索設計空間，同時保持良好的信息交換。</p> 
+<p id="%E5%8A%A8%E7%94%BB%E6%95%88%E6%9E%9C%E5%A6%82%E4%B8%8B%EF%BC%9A">動畫效果如下：</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" src="./遺傳算法的交叉算子/2019120215430277.gif"></p> 
+<hr>
+<h2 id="6.%20%E9%A1%BA%E5%BA%8F%E4%BA%A4%E5%8F%89%EF%BC%88Order%20Crossover%EF%BC%8COX%EF%BC%89"><a name="t5"></a>6. 順序交叉（Order Crossover，OX）</h2> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在兩個父代染色體中隨機選擇起始和結束位置，將父代染色體1該區域內的基因複製到子代1相同位置上，再在父代染色體2上將子代1中缺少的基因按照順序填入。另一個子代以類似方式得到。與PMX不同的是，OX不用進行衝突檢測工作（實際上也只有PMX需要做衝突檢測）。</p> 
+<p id="%E8%BF%87%E7%A8%8B%EF%BC%9A">過程：</p> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Step1：與PMX相同，隨機選擇一對染色體（父代）中幾個基因的起止位置（兩染色體被選位置相同）。</p> 
+<p>&nbsp;</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" height="124" src="./遺傳算法的交叉算子/20191202154354913.png" width="400"></p> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Step2：生成一個子代，並保證子代中被選中的基因的位置與父代相同。</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" height="42" src="./遺傳算法的交叉算子/20191202154419728.png" width="400"></p> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Step3：先找出第一步選中的基因在另一個父代中的位置，再將其餘基因按順序放入上一步生成的子代中。</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" height="95" src="./遺傳算法的交叉算子/20191202154430744.png" width="400"></p> 
+<p id="%E5%8A%A8%E7%94%BB%E6%95%88%E6%9E%9C%E5%A6%82%E4%B8%8B%EF%BC%9A">動畫效果如下：</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" src="./遺傳算法的交叉算子/20191202154513167.gif"></p> 
+<hr>
+<h2 id="7.%20%E5%9F%BA%E4%BA%8E%E4%BD%8D%E7%BD%AE%E7%9A%84%E4%BA%A4%E5%8F%89%EF%BC%88Position-based%20Crossover%EF%BC%8CPBX%EF%BC%89"><a name="t6"></a>7. 基於位置的交叉（Position-based Crossover，PBX）</h2> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在兩個父代染色體中隨機選擇幾個位置，位置可以不連續，將父代染色體1這些位置上的基因複製到子代1相同位置上，再在父代染色體2上將子代1中缺少的基因按照順序填入。另一個子代以類似方式得到。PBX與OX的不同在於選取的位置可以不連續。</p> 
+<p id="%E8%BF%87%E7%A8%8B%EF%BC%9A">過程：</p> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Step1：隨機選擇一對染色體（父代）中幾個基因，位置可不連續，但兩染色體被選位置相同。</p> 
+<p>&nbsp;</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" height="118" src="./遺傳算法的交叉算子/20191202155105548.png" width="400"></p> 
+<p><br> Step2：與OX的第二步相同，生成一個子代，並保證子代中被選中的基因的位置與父代相同。</p> 
+<p>&nbsp;</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" height="42" src="./遺傳算法的交叉算子/20191202155157778.png" width="400"></p> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Step3：也與OX的第三步相同，先找出第一步選中的基因在另一個父代中的位置，再將其餘基因按順序放入上一步生成的子代中。</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" height="96" src="./遺傳算法的交叉算子/20191202155224616.png" width="400"></p> 
+<p id="%E5%8A%A8%E7%94%BB%E6%95%88%E6%9E%9C%E5%A6%82%E4%B8%8B%EF%BC%9A">動畫效果如下：</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" src="./遺傳算法的交叉算子/20191202155247747.gif"></p> 
+<hr>
+<h2 id="8.%20%E5%9F%BA%E4%BA%8E%E9%A1%BA%E5%BA%8F%E7%9A%84%E4%BA%A4%E5%8F%89%EF%BC%88Order-Based%20Crossover%EF%BC%8COBX%EF%BC%89"><a name="t7"></a>8. 基於順序的交叉（Order-Based Crossover，OBX）</h2> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在兩個父代染色體中隨機選擇幾個位置，位置可以不連續，先在父代染色體2中找到父代染色體1被選中基因的位置，再用父代染色體2中其餘的基因生成子代，並保證位置對應，將父代染色體1中被選擇的基因按順序放入子代剩餘位置中。另一個子代以類似方式得到。OBX與PBX相比，生成子代的“基礎”基因來源不同，PBX來自被選中基因，OBX來自剩餘基因。</p> 
+<p id="%E8%BF%87%E7%A8%8B%EF%BC%9A">過程：</p> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Step1：隨機選擇一對染色體（父代）中幾個基因，位置可不連續，但兩染色體被選位置相同。</p> 
+<p>&nbsp;</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" height="123" src="./遺傳算法的交叉算子/20191202155400686.png" width="400"></p> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Step2：先在父代2中找到父代1被選中基因的位置，再用父代2中其餘的基因生成子代，並保證位置對應。</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" height="42" src="./遺傳算法的交叉算子/20191202155710890.png" width="400"></p> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Step3：將父代1中被選擇的基因按順序放入子代剩餘位置中。</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" height="96" src="./遺傳算法的交叉算子/20191202155723201.png" width="400"></p> 
+<p id="%E5%8A%A8%E7%94%BB%E6%95%88%E6%9E%9C%E5%A6%82%E4%B8%8B%EF%BC%9A">動畫效果如下：</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" src="./遺傳算法的交叉算子/20191202155843406.gif"></p> 
+<hr>
+<h2 id="9.%20%E5%BE%AA%E7%8E%AF%E4%BA%A4%E5%8F%89%EF%BC%88Cycle%20Crossover%EF%BC%8CCX%EF%BC%89"><a name="t8"></a>9. 循環交叉（Cycle Crossover，CX）</h2> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在某個父代上隨機選擇1個基因，然後找到另一個父代相應位置上的基因編號，再回到第一個父代找到同編號的基因的位置，重複先前工作，直至形成一個環，環中的所有基因的位置即為最後選中的位置。用父代染色體1中選中的基因生成子代，並保證位置對應，最後將父代染色體2中剩餘基因放入子代中。另一個子代以相同方式獲得。CX的特點在於只需要隨機選擇一個位置即可得到多個交叉位置。</p> 
+<p id="%E5%8A%A8%E7%94%BB%E6%95%88%E6%9E%9C%E5%A6%82%E4%B8%8B%EF%BC%9A">動畫效果如下：</p> 
+<p>&nbsp;</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" src="./遺傳算法的交叉算子/20191202160053616.gif"></p> 
+<hr>
+<h2 id="10.%20%E5%AD%90%E8%B7%AF%E5%BE%84%E4%BA%A4%E5%8F%89%E4%BA%A4%E5%8F%89%EF%BC%88Subtour%20Exchange%20Crossover%EF%BC%8CSEX%EF%BC%89"><a name="t9"></a>10. 子路徑交叉交叉（Subtour Exchange Crossover，SEX）</h2> 
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在某個父代上選擇1組基因，在另一父代上找到這些基因的位置，保持未選中基因不變，按選中基因的出現順序，交換兩父代染色體中基因的位置，一次生成兩個子代。SEX的特點是只在一個染色體上選擇基因的位置。</p> 
+<p id="%E5%8A%A8%E7%94%BB%E6%95%88%E6%9E%9C%E5%A6%82%E4%B8%8B%EF%BC%9A%E2%80%8B%E7%BC%96%E8%BE%91">動畫效果如下：<br><br> &nbsp;</p> 
+<p class="img-center"><img alt="在這裡插入圖片描述" src="./遺傳算法的交叉算子/20191202160108792.gif"></p> 
+<p>&nbsp;</p>
+                </div>
+        </div>
+        <div id="treeSkill"></div>
+    </article>
+  <script>
+  $(function() {
+    setTimeout(function () {
+      var mathcodeList = document.querySelectorAll('.htmledit_views img.mathcode');
+      if (mathcodeList.length > 0) {
+        var testImg = new Image();
+        testImg.onerror = function () {
+          mathcodeList.forEach(function (item) {
+            $(item).before('<span class="img-codecogs">\\(' + item.alt + '\\)</span>');
+            $(item).remove();
+          })
+          MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        }
+        testImg.src = mathcodeList[0].src;
+      }
+    }, 1000)
+  })
+  </script>
+</div>
+<script type="text/javascript" crossorigin="" src="./遺傳算法的交叉算子/qrcode-7c90a92189.min.js.下載"></script>
+<script src="./遺傳算法的交叉算子/saved_resource(2)" type="text/javascript"></script>
+<script type="text/javascript" crossorigin="" src="./遺傳算法的交叉算子/user-login.js.下載"></script>
+<script type="text/javascript" crossorigin="" src="./遺傳算法的交叉算子/collection-box.js.下載"></script>
+                <div class="first-recommend-box recommend-box ">
+</main>
+    <!-- 詳情頁顯示目錄 -->
+<!--文章目錄-->
+<div id="asidedirectory" class="aside-box">
+    <div class="groupfile" id="directory">
+        <h3 class="aside-title">目錄</h3>
+        <div class="align-items-stretch group_item">
+            <div class="pos-box">
+            <div class="scroll-box">
+                <div class="toc-box"><ol><li class="active"><a href="#t0">1. 部分匹配交叉（Partially-matched crossover，PMX）</a></li><li class=""><a href="#t1">2.單點交叉（Single-point crossover）</a></li><li class=""><a href="#t2">3.兩點交叉（Two-points crossover）</a></li><li class=""><a href="#t3">4.多點交叉（Multi-point crossover）</a></li><li class=""><a href="#t4">5. 均勻交叉（Uniform crossover）</a></li><li class=""><a href="#t5">6. 順序交叉（Order Crossover，OX）</a></li><li class=""><a href="#t6">7. 基於位置的交叉（Position-based Crossover，PBX）</a></li><li class=""><a href="#t7">8. 基於順序的交叉（Order-Based Crossover，OBX）</a></li><li class=""><a href="#t8">9. 循環交叉（Cycle Crossover，CX）</a></li><li class=""><a href="#t9">10. 子路徑交叉交叉（Subtour Exchange Crossover，SEX）</a></li></ol></div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+</aside>
+    <!-- 富文本柱狀圖  -->
+	<link rel="stylesheet" href="./遺傳算法的交叉算子/chart.css">
+	<script type="text/javascript" src="./遺傳算法的交叉算子/chart.min.js.下載"></script>
+    <script type="text/javascript" src="./遺傳算法的交叉算子/widget2chart.js.下載"></script>
+<script src="./遺傳算法的交叉算子/pc_wap_highlight-7e7de84184.min.js.下載" type="text/javascript"></script>
+<script src="./遺傳算法的交叉算子/pc_wap_common-fbcbe8567e.min.js.下載" type="text/javascript"></script>
+<script src="./遺傳算法的交叉算子/edit_copy_code-3d2bfc7b1e.min.js.下載" type="text/javascript"></script>
+<link rel="stylesheet" href="./遺傳算法的交叉算子/atom-one-dark.css">
+<script src="./遺傳算法的交叉算子/user-accusation.js.下載" type="text/javascript"></script>
+
+    <script src="./遺傳算法的交叉算子/baidu-search.js.下載" type="text/javascript"></script>
+<script src="./遺傳算法的交叉算子/qrcode.js.下載"></script>
+<script src="./遺傳算法的交叉算子/qrcode.min.js.下載"></script>
+<script src="./遺傳算法的交叉算子/user-ordercart.js.下載" type="text/javascript"></script>
+<script src="./遺傳算法的交叉算子/user-ordertip.js.下載" type="text/javascript"></script>
+<script src="./遺傳算法的交叉算子/order-payment.js.下載" type="text/javascript"></script>
+<script src="./遺傳算法的交叉算子/common-a1dfbf1dc3.min.js.下載" type="text/javascript"></script>
+<script src="./遺傳算法的交叉算子/detail-9521d2704a.min.js.下載" type="text/javascript"></script>
+<script src="./遺傳算法的交叉算子/column-0dd80de049.min.js.下載" type="text/javascript"></script>
+<script src="./遺傳算法的交叉算子/copyright.js.下載" type="text/javascript"></script>
